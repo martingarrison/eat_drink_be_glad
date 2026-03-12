@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Eat, Drink, Be Glad!</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -28,15 +28,16 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Nunito',sans-serif;background:var(--sky);color:var(--text);min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 15%,rgba(255,255,255,0.5) 0%,transparent 65%),radial-gradient(ellipse 50% 70% at 80% 85%,rgba(60,110,160,0.15) 0%,transparent 65%);pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 16px 80px;}
-.app-header{text-align:center;padding:30px 0 18px;margin-bottom:20px;}
-.app-header h1{font-family:'Lora',serif;font-size:clamp(24px,6vw,42px);font-weight:700;color:var(--text);letter-spacing:-0.3px;}
+.sticky-shell{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(200,223,240,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:0 2px 14px rgba(40,90,130,0.10);}
+.sticky-inner{max-width:860px;margin:0 auto;padding:10px 16px 8px;}
+.app-header{text-align:center;padding:0 0 8px;}
+.app-header h1{font-family:'Lora',serif;font-size:clamp(20px,5vw,32px);font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.1;}
 .app-header h1 em{font-style:italic;color:var(--accent-a);}
-.app-header .tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mid);margin-top:6px;}
-.nav-tabs{display:flex;gap:3px;background:rgba(60,110,160,0.13);border-radius:15px;padding:4px;margin-bottom:22px;}
-.nav-tab{flex:1;padding:10px 6px;border:none;background:transparent;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.nav-tabs{display:flex;gap:3px;background:rgba(60,110,160,0.13);border-radius:15px;padding:4px;margin-bottom:0;}
+.nav-tab{flex:1;padding:8px 6px;border:none;background:transparent;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .nav-tab.active{background:var(--white);color:var(--accent-a);box-shadow:var(--shadow);}
 .nav-tab:hover:not(.active){color:var(--text);}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 16px 80px;padding-top:calc(var(--header-h, 110px) + 16px);}
 .view{display:none;}.view.active{display:block;}
 .card{background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .card-title{font-family:'Lora',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
@@ -122,6 +123,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .mprev{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 15px;padding:11px;background:rgba(58,133,168,0.07);border-radius:11px;}
 .mpi{text-align:center;}.mpi .mv{font-size:17px;font-weight:700;color:var(--accent-a);}.mpi .ml{font-size:10px;color:var(--text-mid);font-weight:600;}
 .modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:6px;flex-shrink:0;}
+.copy-meal-btn{width:100%;padding:8px 13px;border:1.5px dashed var(--border);border-radius:9px;background:transparent;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;text-align:left;transition:all 0.15s;margin-bottom:8px;}
+.copy-meal-btn:hover{border-color:var(--meal-l);color:var(--meal-l);}
 .sm-db-link{width:100%;padding:8px 13px;border:1.5px dashed var(--border);border-radius:9px;background:transparent;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;text-align:left;transition:all 0.15s;}
 .sm-db-link:hover{border-color:var(--accent-a);color:var(--accent-a);}
 .sm-db-link.loading{color:var(--text-light);}
@@ -150,30 +153,65 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .empty-msg{padding:18px;text-align:center;font-size:13px;color:var(--text-light);font-style:italic;}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:white;padding:10px 17px;border-radius:11px;font-size:13px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all 0.28s ease;max-width:260px;}
 .toast.show{transform:translateY(0);opacity:1;}
+.onboard-banner{background:linear-gradient(135deg,var(--accent-a),var(--meal-d));border-radius:18px;padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow);}
+.onboard-text{color:white;}
+.onboard-text strong{display:block;font-family:'Lora',serif;font-size:15px;font-weight:700;margin-bottom:3px;}
+.onboard-text span{font-size:12px;opacity:0.85;}
+.onboard-btn{background:white;color:var(--accent-a);border:none;border-radius:10px;padding:8px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s;}
+.onboard-btn:hover{filter:brightness(0.95);}
+.card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.chart-range-sel{padding:4px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;-webkit-appearance:none;appearance:none;}
+.chart-range-sel:focus{outline:none;border-color:var(--accent-a);}
+.sparkline-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.spark-cell{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:12px 12px 10px;}
+.spark-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-mid);}
+.spark-avg{font-family:'Lora',serif;font-size:20px;font-weight:700;color:var(--text);margin:2px 0 6px;}
+.spark-wrap{position:relative;height:80px;}
+.p-activity-preview{margin-top:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.pap-row{display:flex;justify-content:space-between;align-items:center;padding:7px 13px;border-bottom:1px solid var(--border);font-size:13px;}
+.pap-row:last-child{border-bottom:none;}
+.pap-row.active{background:rgba(58,133,168,0.08);}
+.pap-lbl{color:var(--text-mid);font-size:12px;}
+.pap-val{font-weight:700;color:var(--text);font-family:'Lora',serif;}
+.pap-val.active{color:var(--accent-a);}
+.wt-update-btn{display:flex;align-items:center;gap:6px;background:rgba(58,133,168,0.09);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;margin-top:12px;transition:all 0.15s;}
+.wt-update-btn:hover{border-color:var(--accent-a);color:var(--accent-a);}
+.wt-empty{padding:20px;text-align:center;font-size:13px;color:var(--text-light);font-style:italic;}
 @media(max-width:580px){
   .summary-grid{grid-template-columns:1fr 1fr;}
   .form-row{grid-template-columns:1fr;}
   .form-row.three{grid-template-columns:1fr 1fr;}
   .rolling-grid{grid-template-columns:1fr;}
   .mprev{grid-template-columns:1fr 1fr;}
+  .fg input,.fg select{font-size:16px;}
 }
 </style>
 </head>
 <body>
+<div class="sticky-shell" id="sticky-shell">
+  <div class="sticky-inner">
+    <header class="app-header">
+      <h1>Eat, Drink, <em>Be Glad!</em> <span id="header-name" style="font-size:14px;font-weight:400;font-family:'Nunito',sans-serif;color:var(--text-mid);font-style:normal;"></span></h1>
+    </header>
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchView('today',this)">📋 Today</button>
+      <button class="nav-tab" onclick="switchView('trends',this)">📈 Trends</button>
+      <button class="nav-tab" onclick="switchView('foods',this)">🥗 My Foods</button>
+      <button class="nav-tab" onclick="switchView('profile',this)">⚙️ Profile</button>
+    </nav>
+  </div>
+</div>
 <div class="wrap">
-  <header class="app-header">
-    <h1>Eat, Drink, <em>Be Glad!</em></h1>
-    <div class="tag">Your personal nutrition companion</div>
-  </header>
-  <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('today',this)">📋 Today</button>
-    <button class="nav-tab" onclick="switchView('trends',this)">📈 Trends</button>
-    <button class="nav-tab" onclick="switchView('foods',this)">🥗 My Foods</button>
-    <button class="nav-tab" onclick="switchView('profile',this)">⚙️ Profile</button>
-  </nav>
 
   <!-- TODAY -->
   <div class="view active" id="view-today">
+    <div id="onboard-banner" class="onboard-banner" style="display:none;">
+      <div class="onboard-text">
+        <strong>Welcome! Let's get started.</strong>
+        <span>Set up your profile to track calories vs. your goal.</span>
+      </div>
+      <button class="onboard-btn" onclick="switchView('profile', document.querySelectorAll('.nav-tab')[3])">Set Up →</button>
+    </div>
     <div class="date-nav">
       <button onclick="changeDay(-1)">‹</button>
       <div class="date-display" id="date-display"></div>
@@ -188,7 +226,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="delta-wrap">
       <div class="delta-row">
         <span class="delta-lbl">vs. Maintenance</span>
-        <span class="delta-val" id="delta-val">Set up profile →</span>
+        <span class="delta-val" id="delta-val">—</span>
       </div>
       <div class="bar-track"><div class="bar-fill" id="bar-fill"></div><div class="bar-ctr"></div></div>
     </div>
@@ -213,18 +251,63 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <!-- TRENDS -->
   <div class="view" id="view-trends">
     <div class="rolling-grid">
-      <div class="rc"><div class="rc-lbl">7-Day Avg Delta</div><div class="rc-val" id="r7d">—</div><div class="rc-sub" id="r7s">Need more data</div></div>
-      <div class="rc"><div class="rc-lbl">30-Day Avg Delta</div><div class="rc-val" id="r30d">—</div><div class="rc-sub" id="r30s">Need more data</div></div>
+      <div class="rc"><div class="rc-lbl">7-Day Balance</div><div class="rc-val" id="r7d">—</div><div class="rc-sub" id="r7s">Need more data</div></div>
+      <div class="rc"><div class="rc-lbl">30-Day Balance</div><div class="rc-val" id="r30d">—</div><div class="rc-sub" id="r30s">Need more data</div></div>
       <div class="rc"><div class="rc-lbl">7-Day Avg Cal</div><div class="rc-val" id="r7c">—</div><div class="rc-sub">kcal/day avg</div></div>
       <div class="rc"><div class="rc-lbl">Days Logged</div><div class="rc-val" id="days-n">0</div><div class="rc-sub">total days tracked</div></div>
     </div>
-    <div class="card"><div class="card-title"><span>📉</span> Daily Delta from Maintenance</div>
-      <div style="font-size:12px;color:var(--text-mid);margin-bottom:8px;">Amber = surplus · Slate blue = deficit</div>
-      <div class="chart-wrap"><canvas id="chart-delta"></canvas></div></div>
-    <div class="card"><div class="card-title"><span>🍽️</span> Daily Calories vs Maintenance</div>
-      <div class="chart-wrap"><canvas id="chart-cal"></canvas></div></div>
-    <div class="card"><div class="card-title"><span>💪</span> 30-Day Macro Mix</div>
-      <div class="chart-wrap" style="height:175px;"><canvas id="chart-macro"></canvas></div></div>
+    <div class="card">
+      <div class="card-title-row">
+        <div class="card-title" style="margin-bottom:0;"><span>📊</span> Calorie Balance</div>
+        <select class="chart-range-sel" id="bal-range" onchange="renderTrends()">
+          <option value="7">This week</option>
+          <option value="14">Last 2 weeks</option>
+          <option value="30" selected>Last month</option>
+          <option value="90">Last 3 months</option>
+        </select>
+      </div>
+      <div style="font-size:12px;color:var(--text-mid);margin:8px 0;">Amber = surplus · Slate blue = deficit · <span style="color:#5A9E7A;">Sage = on target</span></div>
+      <div class="chart-wrap"><canvas id="chart-delta"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title-row">
+        <div class="card-title" style="margin-bottom:0;"><span>💪</span> Daily Macros</div>
+        <select class="chart-range-sel" id="macro-range" onchange="renderTrends()">
+          <option value="7">This week</option>
+          <option value="14">Last 2 weeks</option>
+          <option value="30" selected>Last month</option>
+          <option value="90">Last 3 months</option>
+        </select>
+      </div>
+      <div style="font-size:12px;color:var(--text-mid);margin:6px 0 12px;">Daily averages · dashed line = your goal</div>
+      <div class="sparkline-grid">
+        <div class="spark-cell">
+          <div class="spark-lbl">Protein</div>
+          <div class="spark-avg" id="sp-avg-prot">—</div>
+          <div class="spark-wrap"><canvas id="chart-prot"></canvas></div>
+        </div>
+        <div class="spark-cell">
+          <div class="spark-lbl">Carbs</div>
+          <div class="spark-avg" id="sp-avg-carb">—</div>
+          <div class="spark-wrap"><canvas id="chart-carb"></canvas></div>
+        </div>
+        <div class="spark-cell">
+          <div class="spark-lbl">Fat</div>
+          <div class="spark-avg" id="sp-avg-fat">—</div>
+          <div class="spark-wrap"><canvas id="chart-fat"></canvas></div>
+        </div>
+        <div class="spark-cell">
+          <div class="spark-lbl">Fiber</div>
+          <div class="spark-avg" id="sp-avg-fiber">—</div>
+          <div class="spark-wrap"><canvas id="chart-fiber"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card-title"><span>⚖️</span> Weight Over Time</div>
+      <div id="wt-chart-wrap" class="chart-wrap" style="display:none;"><canvas id="chart-weight"></canvas></div>
+      <div id="wt-empty" class="wt-empty">No weight entries yet. Log your first below.</div>
+      <button class="wt-update-btn" onclick="openWeightModal()">⚖️ Log Today's Weight</button>
+    </div>
   </div>
 
   <!-- MY FOODS -->
@@ -255,17 +338,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="view" id="view-profile">
     <div class="card">
       <div class="card-title"><span>🧮</span> Your Profile</div>
-      <div class="form-row">
-        <div class="fg"><label>Age</label><input type="number" id="p-age" placeholder="35" min="14" max="100"></div>
-        <div class="fg"><label>Sex</label><select id="p-sex"><option value="male">Male</option><option value="female">Female</option></select></div>
+      <div class="form-row full">
+        <div class="fg"><label>Your Name</label><input type="text" id="p-name" placeholder="e.g. Martin" oninput="liveCalc()"></div>
       </div>
       <div class="form-row">
-        <div class="fg"><label>Weight (lbs)</label><input type="number" id="p-weight" placeholder="165"></div>
-        <div class="fg"><label>Height (in)</label><input type="number" id="p-height" placeholder="70"></div>
+        <div class="fg"><label>Age</label><input type="number" id="p-age" placeholder="35" min="14" max="100" oninput="liveCalc()"></div>
+        <div class="fg"><label>Sex</label><select id="p-sex" onchange="liveCalc()"><option value="male">Male</option><option value="female">Female</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Weight (lbs)</label><input type="number" id="p-weight" placeholder="165" oninput="liveCalc()"></div>
+        <div class="fg"><label>Height (in)</label><input type="number" id="p-height" placeholder="70" oninput="liveCalc()"></div>
+      </div>
+      <div class="form-row full">
+        <div class="fg"><label>Body Fat % <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional — unlocks Katch-McArdle)</span></label>
+          <input type="number" id="p-bf" placeholder="e.g. 18" min="3" max="60" oninput="liveCalc()"></div>
       </div>
       <div class="form-row full">
         <div class="fg"><label>Activity Level</label>
-          <select id="p-activity">
+          <select id="p-activity" onchange="liveCalc()">
             <option value="1.2">Sedentary (desk job, little/no exercise)</option>
             <option value="1.375">Lightly active (1–3 days/wk)</option>
             <option value="1.55" selected>Moderately active (3–5 days/wk)</option>
@@ -274,26 +364,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </select>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveProfile()">Calculate & Save</button>
       <div class="profile-result" id="profile-result">
         <div class="p-tdee-lbl">Estimated Daily Maintenance</div>
         <div class="p-tdee" id="p-tdee">—</div>
-        <div style="font-size:13px;color:var(--text-mid);margin-top:4px;">calories/day · Mifflin-St Jeor</div>
-        <div class="p-mg">
-          <div class="p-mi"><div class="pmv" id="pp-prot">—</div><div class="pml">Protein</div></div>
-          <div class="p-mi"><div class="pmv" id="pp-carb">—</div><div class="pml">Carbs</div></div>
-          <div class="p-mi"><div class="pmv" id="pp-fat">—</div><div class="pml">Fat</div></div>
-        </div>
-        <div style="font-size:11px;color:var(--text-light);margin-top:9px;">Macro suggestions are a starting point — adjust to your preference.</div>
+        <div style="font-size:12px;color:var(--text-mid);margin-top:3px;" id="p-formula-lbl">calories/day · Mifflin-St Jeor</div>
+        <div class="p-activity-preview" id="p-activity-preview"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="saveProfile()">Save Profile</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🎯</span> Daily Goals <span style="font-size:12px;font-weight:400;font-family:'Nunito',sans-serif;color:var(--text-mid);">— all optional</span></div>
+      <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px;">Set targets to see reference lines on your macro charts.</p>
+      <div class="form-row">
+        <div class="fg"><label>Calorie Goal <span style="font-weight:400;text-transform:none;">(overrides TDEE)</span></label><input type="number" id="g-cal" placeholder="e.g. 2200" min="0" oninput="saveGoals()"></div>
+        <div class="fg"><label>Protein (g/day)</label><input type="number" id="g-prot" placeholder="e.g. 140" min="0" oninput="saveGoals()"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Carbs (g/day)</label><input type="number" id="g-carb" placeholder="e.g. 200" min="0" oninput="saveGoals()"></div>
+        <div class="fg"><label>Fat (g/day)</label><input type="number" id="g-fat" placeholder="e.g. 65" min="0" oninput="saveGoals()"></div>
+      </div>
+      <div class="form-row full">
+        <div class="fg"><label>Fiber (g/day)</label><input type="number" id="g-fiber" placeholder="e.g. 30" min="0" oninput="saveGoals()"></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title"><span>💾</span> Data Backup</div>
-      <p style="font-size:13px;color:var(--text-mid);margin-bottom:11px;">Export your log and custom foods as CSV, or import a previous backup.</p>
+      <p style="font-size:13px;color:var(--text-mid);margin-bottom:11px;">Full backup saves everything — profile, food log, weight history, and custom foods. Use this to move between devices or restore after clearing your browser.</p>
       <div class="data-actions">
-        <button class="btn btn-secondary" onclick="exportData()">⬇ Export All Data</button>
-        <button class="btn btn-secondary" onclick="document.getElementById('imp').click()">⬆ Import Backup</button>
-        <input type="file" id="imp" accept=".csv" style="display:none" onchange="importData(event)">
+        <button class="btn btn-primary btn-sm" onclick="exportJSON()">⬇ Full Backup (JSON)</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('imp').click()">⬆ Restore Backup</button>
+        <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(event)">
       </div>
     </div>
     <div class="card">
@@ -309,7 +410,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="modal">
     <div class="modal-title"><span class="meal-lbl" id="sm-lbl">Breakfast</span>Add Food</div>
     <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" id="sm-q" autocomplete="off" oninput="onSearch()" placeholder="Search foods…"></div>
-    <div class="modal-scroll" id="sm-results"></div>
+    <div class="modal-scroll" id="sm-results">
+      <div id="sm-suggestions"></div>
+    </div>
     <div id="sm-api-section" style="flex-shrink:0;padding-top:6px;display:none;">
       <button class="sm-db-link" onclick="doAPIFromLink()" id="sm-api-btn">🌐 Search Open Food Facts database</button>
       <div id="sm-api-results" style="margin-top:6px;"></div>
@@ -351,6 +454,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeCreate()">Cancel</button>
       <button class="btn btn-primary" onclick="saveFromCreate()">Save & Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- WEIGHT MODAL -->
+<div class="modal-overlay" id="weight-modal">
+  <div class="modal" style="max-width:340px;">
+    <div class="modal-title">Log Weight</div>
+    <div class="fg" style="margin-bottom:14px;">
+      <label>Weight (lbs)</label>
+      <input type="number" id="wt-input" placeholder="e.g. 165" min="50" max="600" step="0.1">
+    </div>
+    <div id="wt-date-lbl" style="font-size:12px;color:var(--text-mid);margin-bottom:14px;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeWeightModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveWeight()">Save</button>
     </div>
   </div>
 </div>
@@ -763,10 +882,339 @@ const LF=[
 {n:"Salami",s:"1 oz",c:100,p:6,cb:0,f:8},
 {n:"Samosa",s:"1 piece",c:155,p:3,cb:22,f:7},
 {n:"Onigiri",s:"1 piece",c:180,p:4,cb:38,f:1},
+// ── WHATABURGER ──
+{n:"Whataburger, Original",s:"1 burger",c:590,p:30,cb:61,f:26},
+{n:"Whataburger, Double Meat",s:"1 burger",c:830,p:48,cb:62,f:44},
+{n:"Whataburger, Triple Meat",s:"1 burger",c:1060,p:65,cb:63,f:62},
+{n:"Whataburger Jr.",s:"1 burger",c:310,p:16,cb:31,f:13},
+{n:"Whataburger, Bacon & Cheese",s:"1 burger",c:650,p:35,cb:61,f:29},
+{n:"Whataburger, Jalapeño & Cheese",s:"1 burger",c:600,p:31,cb:62,f:27},
+{n:"Whataburger, Mushroom Swiss",s:"1 burger",c:670,p:36,cb:60,f:30},
+{n:"Whataburger, Avocado Bacon Burger",s:"1 burger",c:700,p:36,cb:62,f:33},
+{n:"Whataburger, Green Chile DB",s:"1 burger",c:860,p:51,cb:63,f:46},
+{n:"Whataburger, Patty Melt",s:"1 sandwich",c:820,p:43,cb:62,f:44},
+{n:"Whataburger, Honey BBQ Chicken Strip Sandwich",s:"1 sandwich",c:700,p:27,cb:87,f:24},
+{n:"Whataburger, Chicken Strip Sandwich",s:"1 sandwich",c:630,p:29,cb:68,f:24},
+{n:"Whataburger, Whatachick'n Sandwich",s:"1 sandwich",c:470,p:26,cb:52,f:16},
+{n:"Whataburger, Spicy Chicken Sandwich",s:"1 sandwich",c:480,p:26,cb:53,f:17},
+{n:"Whataburger, Grilled Chicken Sandwich",s:"1 sandwich",c:380,p:33,cb:41,f:8},
+{n:"Whataburger, Fish Sandwich",s:"1 sandwich",c:500,p:19,cb:58,f:21},
+{n:"Whataburger, BLT",s:"1 sandwich",c:450,p:16,cb:41,f:24},
+{n:"Whataburger, Breakfast on a Bun, Egg & Cheese",s:"1 sandwich",c:370,p:18,cb:37,f:16},
+{n:"Whataburger, Breakfast on a Bun, Sausage",s:"1 sandwich",c:530,p:24,cb:37,f:31},
+{n:"Whataburger, Breakfast on a Bun, Bacon",s:"1 sandwich",c:420,p:22,cb:38,f:19},
+{n:"Whataburger, Biscuit, Plain",s:"1 biscuit",c:280,p:4,cb:36,f:13},
+{n:"Whataburger, Biscuit, Sausage",s:"1 biscuit",c:500,p:14,cb:37,f:34},
+{n:"Whataburger, Biscuit, Bacon Egg Cheese",s:"1 biscuit",c:500,p:21,cb:38,f:30},
+{n:"Whataburger, Biscuit, Sausage Egg Cheese",s:"1 biscuit",c:660,p:26,cb:38,f:46},
+{n:"Whataburger, Pancakes (3)",s:"3 pancakes",c:580,p:13,cb:101,f:14},
+{n:"Whataburger, Cinnamon Roll",s:"1 roll",c:380,p:6,cb:61,f:13},
+{n:"Whataburger, Taquito, Potato & Egg",s:"1 taquito",c:380,p:12,cb:41,f:18},
+{n:"Whataburger, Taquito, Sausage & Egg",s:"1 taquito",c:490,p:19,cb:41,f:28},
+{n:"Whataburger, Taquito, Bacon & Egg",s:"1 taquito",c:400,p:18,cb:41,f:18},
+{n:"Whataburger, Taquito, Chorizo & Egg",s:"1 taquito",c:440,p:18,cb:41,f:23},
+{n:"Whataburger, French Fries, Small",s:"1 small",c:280,p:3,cb:38,f:13},
+{n:"Whataburger, French Fries, Medium",s:"1 medium",c:380,p:5,cb:51,f:17},
+{n:"Whataburger, French Fries, Large",s:"1 large",c:530,p:6,cb:71,f:24},
+{n:"Whataburger, Onion Rings, Medium",s:"1 medium",c:420,p:5,cb:48,f:23},
+{n:"Whataburger, Apple Slices",s:"1 serving",c:30,p:0,cb:8,f:0},
+{n:"Whataburger, Garden Salad",s:"1 salad",c:60,p:3,cb:10,f:1},
+{n:"Whataburger, Chocolate Shake, Small",s:"1 small",c:600,p:12,cb:94,f:20},
+{n:"Whataburger, Vanilla Shake, Small",s:"1 small",c:560,p:12,cb:88,f:18},
+{n:"Whataburger, Strawberry Shake, Small",s:"1 small",c:580,p:11,cb:93,f:18},
+{n:"Whataburger, Hot Coffee, Medium",s:"1 medium",c:5,p:1,cb:1,f:0},
+// ── FAST FOOD (OTHER) ──
+{n:"McDonald's Big Mac",s:"1 burger",c:590,p:25,cb:46,f:34},
+{n:"McDonald's Quarter Pounder w/ Cheese",s:"1 burger",c:740,p:48,cb:42,f:42},
+{n:"McDonald's McDouble",s:"1 burger",c:400,p:22,cb:34,f:20},
+{n:"McDonald's Filet-O-Fish",s:"1 sandwich",c:390,p:16,cb:38,f:19},
+{n:"McDonald's McChicken",s:"1 sandwich",c:400,p:14,cb:41,f:19},
+{n:"McDonald's Egg McMuffin",s:"1 sandwich",c:310,p:17,cb:30,f:13},
+{n:"McDonald's French Fries, Medium",s:"1 medium",c:320,p:4,cb:44,f:15},
+{n:"McDonald's Chicken McNuggets (10)",s:"10 pieces",c:450,p:28,cb:27,f:26},
+{n:"McDonald's Hash Brown",s:"1 piece",c:150,p:1,cb:15,f:9},
+{n:"McDonald's McFlurry, Oreo",s:"1 regular",c:510,p:13,cb:80,f:16},
+{n:"Chick-fil-A Chicken Sandwich",s:"1 sandwich",c:470,p:28,cb:41,f:19},
+{n:"Chick-fil-A Deluxe Sandwich",s:"1 sandwich",c:500,p:29,cb:42,f:21},
+{n:"Chick-fil-A Spicy Sandwich",s:"1 sandwich",c:470,p:28,cb:41,f:19},
+{n:"Chick-fil-A Nuggets (8)",s:"8 pieces",c:260,p:26,cb:11,f:12},
+{n:"Chick-fil-A Waffle Fries, Medium",s:"1 medium",c:420,p:5,cb:50,f:22},
+{n:"Chick-fil-A Grilled Chicken Sandwich",s:"1 sandwich",c:390,p:38,cb:37,f:9},
+{n:"Chick-fil-A Mac & Cheese",s:"1 medium",c:440,p:17,cb:49,f:20},
+{n:"Taco Bell Crunchy Taco",s:"1 taco",c:170,p:8,cb:13,f:9},
+{n:"Taco Bell Soft Taco",s:"1 taco",c:180,p:9,cb:19,f:8},
+{n:"Taco Bell Burrito Supreme",s:"1 burrito",c:390,p:16,cb:49,f:14},
+{n:"Taco Bell Bean & Rice Burrito",s:"1 burrito",c:380,p:13,cb:56,f:11},
+{n:"Taco Bell Chalupa Supreme",s:"1 chalupa",c:350,p:13,cb:31,f:19},
+{n:"Taco Bell Crunchwrap Supreme",s:"1 wrap",c:530,p:17,cb:71,f:20},
+{n:"Taco Bell Quesadilla, Chicken",s:"1 quesadilla",c:510,p:27,cb:40,f:27},
+{n:"Taco Bell Nachos BellGrande",s:"1 order",c:740,p:19,cb:76,f:41},
+{n:"Wendy's Dave's Single",s:"1 burger",c:590,p:30,cb:40,f:33},
+{n:"Wendy's Baconator",s:"1 burger",c:950,p:57,cb:40,f:59},
+{n:"Wendy's Frosty, Small",s:"1 small",c:340,p:9,cb:55,f:9},
+{n:"Wendy's Chili, Small",s:"1 small",c:160,p:14,cb:16,f:4},
+{n:"Subway 6\" Turkey",s:"6 inch",c:280,p:18,cb:38,f:4},
+{n:"Subway 6\" Italian BMT",s:"6 inch",c:410,p:22,cb:38,f:17},
+{n:"Subway 6\" Tuna",s:"6 inch",c:480,p:19,cb:38,f:25},
+{n:"Subway 6\" Veggie",s:"6 inch",c:230,p:9,cb:39,f:3},
+{n:"Chipotle Burrito, Chicken",s:"1 burrito",c:730,p:50,cb:87,f:19},
+{n:"Chipotle Bowl, Chicken",s:"1 bowl",c:665,p:48,cb:79,f:17},
+{n:"Chipotle Tacos, Chicken (3)",s:"3 tacos",c:500,p:38,cb:57,f:13},
+{n:"Chipotle Guacamole",s:"3.5 oz",c:230,p:3,cb:12,f:22},
+{n:"Chipotle Chips",s:"1 serving",c:540,p:7,cb:73,f:24},
+{n:"Chipotle Carnitas Bowl",s:"1 bowl",c:660,p:45,cb:80,f:16},
+{n:"Chipotle Steak Bowl",s:"1 bowl",c:680,p:46,cb:79,f:18},
+{n:"Domino's Pepperoni Pizza",s:"2 slices (large)",c:580,p:24,cb:64,f:26},
+{n:"Domino's Cheese Pizza",s:"2 slices (large)",c:500,p:20,cb:66,f:18},
+{n:"Domino's Stuffed Cheesy Bread",s:"2 pieces",c:370,p:14,cb:42,f:16},
+{n:"Pizza Hut Pepperoni Pan Pizza",s:"2 slices",c:700,p:28,cb:76,f:32},
+{n:"Starbucks Caffe Latte (whole milk)",s:"16 oz grande",c:220,p:12,cb:18,f:11},
+{n:"Starbucks Iced Coffee",s:"16 oz grande",c:70,p:0,cb:18,f:0},
+{n:"Starbucks Frappuccino, Caramel",s:"16 oz grande",c:420,p:5,cb:66,f:15},
+{n:"Starbucks Cold Brew",s:"16 oz",c:5,p:0,cb:0,f:0},
+{n:"Starbucks Matcha Latte",s:"16 oz grande",c:240,p:8,cb:38,f:7},
+// ── PACKAGED / BRANDED SNACKS ──
+{n:"Oreo Cookies",s:"3 cookies",c:160,p:1,cb:25,f:7},
+{n:"Oreo Double Stuf",s:"2 cookies",c:140,p:1,cb:21,f:6},
+{n:"Oreo Thins",s:"4 cookies",c:140,p:1,cb:21,f:6},
+{n:"Doritos, Nacho Cheese",s:"1 oz (about 11 chips)",c:140,p:2,cb:18,f:7},
+{n:"Doritos, Cool Ranch",s:"1 oz",c:140,p:2,cb:18,f:7},
+{n:"Lay's Classic",s:"1 oz",c:160,p:2,cb:15,f:10},
+{n:"Lay's Sour Cream & Onion",s:"1 oz",c:160,p:2,cb:15,f:10},
+{n:"Cheetos Crunchy",s:"1 oz",c:160,p:2,cb:15,f:10},
+{n:"Cheetos Puffs",s:"1 oz",c:150,p:2,cb:16,f:9},
+{n:"Fritos Original",s:"1 oz",c:160,p:2,cb:15,f:10},
+{n:"Pringles Original",s:"15 chips",c:140,p:1,cb:15,f:8},
+{n:"Pringles Sour Cream & Onion",s:"15 chips",c:140,p:1,cb:15,f:8},
+{n:"Goldfish Crackers",s:"55 pieces (1 oz)",c:140,p:3,cb:20,f:5},
+{n:"Ritz Crackers",s:"5 crackers",c:80,p:1,cb:10,f:4},
+{n:"Triscuits",s:"6 crackers",c:120,p:3,cb:20,f:4},
+{n:"Wheat Thins",s:"16 crackers",c:140,p:2,cb:22,f:5},
+{n:"Cheez-Its",s:"27 crackers",c:150,p:3,cb:17,f:8},
+{n:"Sun Chips, Harvest Cheddar",s:"1 oz",c:140,p:2,cb:19,f:6},
+{n:"Kettle Brand Chips, Sea Salt",s:"1 oz",c:140,p:2,cb:19,f:7},
+{n:"PopCorners, Sea Salt",s:"1 oz",c:120,p:2,cb:22,f:3},
+{n:"Skinny Pop Popcorn",s:"3½ cups (1 oz)",c:150,p:2,cb:15,f:10},
+{n:"Boom Chicka Pop, Sea Salt",s:"2¾ cups",c:130,p:2,cb:15,f:6},
+{n:"Pirates Booty, White Cheddar",s:"1 oz",c:120,p:2,cb:18,f:4},
+{n:"Quaker Chewy Granola Bar",s:"1 bar",c:100,p:1,cb:18,f:3},
+{n:"Nature Valley Granola Bar",s:"2 bars",c:190,p:4,cb:29,f:7},
+{n:"Clif Bar",s:"1 bar (68g)",c:250,p:10,cb:44,f:5},
+{n:"Kind Bar, Dark Chocolate Nuts",s:"1 bar",c:200,p:6,cb:17,f:15},
+{n:"RXBar, Chocolate Sea Salt",s:"1 bar",c:210,p:12,cb:24,f:9},
+{n:"Quest Bar, Chocolate Chip",s:"1 bar",c:190,p:21,cb:22,f:8},
+{n:"Larabar, Apple Pie",s:"1 bar",c:190,p:3,cb:29,f:8},
+{n:"Slim Jim Original",s:"1 stick",c:80,p:5,cb:1,f:6},
+{n:"Jack Link's Beef Jerky",s:"1 oz",c:80,p:11,cb:5,f:1},
+{n:"Welch's Fruit Snacks",s:"1 pouch (25g)",c:80,p:1,cb:19,f:0},
+{n:"Fruit Roll-Ups",s:"1 roll",c:50,p:0,cb:12,f:1},
+{n:"Gushers",s:"1 pouch",c:90,p:0,cb:21,f:1},
+{n:"Nutter Butter Cookies",s:"2 cookies",c:130,p:2,cb:19,f:5},
+{n:"Chips Ahoy! Cookies",s:"3 cookies",c:160,p:2,cb:22,f:8},
+{n:"Fig Newtons",s:"2 cookies",c:110,p:1,cb:22,f:2},
+{n:"Nutri-Grain Bar, Strawberry",s:"1 bar",c:130,p:2,cb:27,f:3},
+{n:"Pop-Tarts, Strawberry",s:"1 pastry",c:200,p:2,cb:38,f:5},
+{n:"Pop-Tarts, Brown Sugar Cinnamon",s:"1 pastry",c:210,p:2,cb:37,f:6},
+{n:"Hostess Twinkies",s:"1 cake",c:135,p:1,cb:27,f:4},
+{n:"Hostess Donettes, Powdered",s:"3 donettes",c:220,p:2,cb:29,f:11},
+{n:"Little Debbie Oatmeal Cream Pie",s:"1 pie",c:310,p:3,cb:48,f:13},
+{n:"Little Debbie Swiss Rolls",s:"2 rolls",c:260,p:2,cb:40,f:12},
+{n:"Nutella",s:"2 tbsp",c:200,p:2,cb:23,f:12},
+{n:"Jif Peanut Butter",s:"2 tbsp",c:190,p:7,cb:8,f:16},
+{n:"Skippy Peanut Butter",s:"2 tbsp",c:190,p:7,cb:7,f:16},
+{n:"Justin's Almond Butter",s:"2 tbsp",c:190,p:7,cb:8,f:17},
+{n:"Sun Butter, Sunflower",s:"2 tbsp",c:200,p:7,cb:6,f:17},
+{n:"Jelly, Grape",s:"1 tbsp",c:50,p:0,cb:13,f:0},
+{n:"Honey",s:"1 tbsp",c:60,p:0,cb:17,f:0},
+{n:"Maple Syrup",s:"¼ cup",c:210,p:0,cb:53,f:0},
+// ── PACKAGED / FROZEN MEALS ──
+{n:"Lean Cuisine, Chicken Tikka Masala",s:"1 meal",c:290,p:20,cb:42,f:5},
+{n:"Lean Cuisine, Mac & Cheese",s:"1 meal",c:290,p:15,cb:49,f:5},
+{n:"Amy's Frozen Burrito, Bean & Cheese",s:"1 burrito",c:290,p:11,cb:44,f:8},
+{n:"Amy's Frozen Cheese Pizza",s:"⅓ pizza",c:300,p:13,cb:42,f:9},
+{n:"Amy's Lentil Soup",s:"1 cup",c:150,p:8,cb:27,f:1},
+{n:"Campbell's Tomato Soup",s:"1 cup",c:90,p:2,cb:20,f:0},
+{n:"Campbell's Chicken Noodle Soup",s:"1 cup",c:60,p:3,cb:8,f:2},
+{n:"Progresso Vegetable Soup",s:"1 cup",c:70,p:4,cb:16,f:0},
+{n:"Annie's Mac & Cheese",s:"1 cup prepared",c:270,p:10,cb:48,f:5},
+{n:"Kraft Mac & Cheese",s:"1 cup prepared",c:290,p:9,cb:48,f:7},
+{n:"Chef Boyardee Beefaroni",s:"1 cup",c:230,p:9,cb:34,f:7},
+{n:"Spam Classic",s:"2 oz",c:170,p:7,cb:1,f:15},
+{n:"Vienna Sausages",s:"3 pieces",c:130,p:5,cb:2,f:12},
+// ── BEVERAGES ──
+{n:"Coca-Cola",s:"12 fl oz",c:140,p:0,cb:39,f:0},
+{n:"Diet Coke",s:"12 fl oz",c:0,p:0,cb:0,f:0},
+{n:"Pepsi",s:"12 fl oz",c:150,p:0,cb:41,f:0},
+{n:"Sprite",s:"12 fl oz",c:140,p:0,cb:38,f:0},
+{n:"Dr Pepper",s:"12 fl oz",c:150,p:0,cb:40,f:0},
+{n:"Mountain Dew",s:"12 fl oz",c:170,p:0,cb:46,f:0},
+{n:"Gatorade, Fruit Punch",s:"20 fl oz",c:130,p:0,cb:34,f:0},
+{n:"Powerade, Mountain Berry Blast",s:"20 fl oz",c:130,p:0,cb:35,f:0},
+{n:"Red Bull, Original",s:"8.4 fl oz",c:110,p:1,cb:28,f:0},
+{n:"Monster Energy",s:"16 fl oz",c:210,p:1,cb:54,f:0},
+{n:"5-hour Energy",s:"1 bottle",c:10,p:0,cb:3,f:0},
+{n:"Celsius Energy Drink",s:"12 fl oz",c:10,p:0,cb:2,f:0},
+{n:"Liquid IV, Hydration",s:"1 packet in water",c:45,p:0,cb:11,f:0},
+{n:"Pedialyte",s:"8 fl oz",c:25,p:0,cb:6,f:0},
+{n:"Orange juice",s:"8 fl oz",c:110,p:2,cb:26,f:0},
+{n:"Apple juice",s:"8 fl oz",c:120,p:0,cb:29,f:0},
+{n:"Grape juice",s:"8 fl oz",c:150,p:1,cb:38,f:0},
+{n:"Cranberry juice cocktail",s:"8 fl oz",c:110,p:0,cb:28,f:0},
+{n:"Lemonade, bottled",s:"12 fl oz",c:160,p:0,cb:42,f:0},
+{n:"Sweet tea",s:"12 fl oz",c:120,p:0,cb:30,f:0},
+{n:"Unsweetened iced tea",s:"12 fl oz",c:0,p:0,cb:0,f:0},
+{n:"Kombucha, GT's Original",s:"8 fl oz",c:30,p:0,cb:8,f:0},
+{n:"Fairlife Chocolate Milk",s:"12 fl oz",c:270,p:22,cb:33,f:8},
+{n:"Fairlife Protein Shake",s:"1 bottle",c:150,p:30,cb:3,f:2.5},
+{n:"Premier Protein Shake",s:"1 bottle",c:160,p:30,cb:5,f:3},
+{n:"Muscle Milk",s:"1 bottle (14 fl oz)",c:230,p:25,cb:13,f:9},
+{n:"Naked Green Machine",s:"15.2 fl oz",c:270,p:4,cb:63,f:0},
+{n:"Tropicana Orange Juice",s:"8 fl oz",c:110,p:2,cb:26,f:0},
+{n:"Vitamin Water, XXX",s:"20 fl oz",c:120,p:0,cb:32,f:0},
+{n:"La Croix Sparkling Water",s:"12 fl oz",c:0,p:0,cb:0,f:0},
+{n:"Beer, regular lager",s:"12 fl oz",c:150,p:1,cb:13,f:0},
+{n:"Beer, light",s:"12 fl oz",c:100,p:1,cb:5,f:0},
+{n:"Beer, IPA",s:"12 fl oz",c:180,p:2,cb:15,f:0},
+{n:"Wine, red",s:"5 fl oz",c:125,p:0,cb:4,f:0},
+{n:"Wine, white",s:"5 fl oz",c:120,p:0,cb:4,f:0},
+{n:"Wine, rosé",s:"5 fl oz",c:110,p:0,cb:4,f:0},
+{n:"Champagne",s:"4 fl oz",c:90,p:0,cb:2,f:0},
+{n:"Vodka",s:"1.5 fl oz",c:97,p:0,cb:0,f:0},
+{n:"Tequila",s:"1.5 fl oz",c:97,p:0,cb:0,f:0},
+{n:"Whiskey",s:"1.5 fl oz",c:105,p:0,cb:0,f:0},
+{n:"Rum",s:"1.5 fl oz",c:97,p:0,cb:0,f:0},
+{n:"Gin",s:"1.5 fl oz",c:97,p:0,cb:0,f:0},
+{n:"Margarita",s:"8 fl oz",c:274,p:0,cb:29,f:0},
+{n:"Piña Colada",s:"8 fl oz",c:490,p:2,cb:52,f:17},
+{n:"Moscow Mule",s:"8 fl oz",c:180,p:0,cb:20,f:0},
+// ── CONDIMENTS & SAUCES ──
+{n:"Ketchup",s:"1 tbsp",c:20,p:0,cb:5,f:0},
+{n:"Yellow mustard",s:"1 tsp",c:3,p:0,cb:0,f:0},
+{n:"Dijon mustard",s:"1 tsp",c:5,p:0,cb:0,f:0},
+{n:"Mayonnaise",s:"1 tbsp",c:94,p:0,cb:0,f:10},
+{n:"Duke's Mayonnaise",s:"1 tbsp",c:100,p:0,cb:0,f:11},
+{n:"Miracle Whip",s:"1 tbsp",c:35,p:0,cb:2,f:3},
+{n:"Ranch dressing",s:"2 tbsp",c:130,p:1,cb:2,f:14},
+{n:"Caesar dressing",s:"2 tbsp",c:170,p:1,cb:1,f:18},
+{n:"Italian dressing",s:"2 tbsp",c:80,p:0,cb:3,f:8},
+{n:"Balsamic vinaigrette",s:"2 tbsp",c:90,p:0,cb:4,f:8},
+{n:"Thousand Island dressing",s:"2 tbsp",c:120,p:0,cb:5,f:11},
+{n:"Blue cheese dressing",s:"2 tbsp",c:150,p:1,cb:2,f:16},
+{n:"Honey mustard dressing",s:"2 tbsp",c:130,p:0,cb:10,f:10},
+{n:"BBQ sauce",s:"2 tbsp",c:60,p:0,cb:14,f:0},
+{n:"Hot sauce (Tabasco)",s:"1 tsp",c:0,p:0,cb:0,f:0},
+{n:"Frank's RedHot",s:"1 tsp",c:0,p:0,cb:0,f:0},
+{n:"Sriracha",s:"1 tsp",c:5,p:0,cb:1,f:0},
+{n:"Hoisin sauce",s:"1 tbsp",c:35,p:1,cb:7,f:0},
+{n:"Soy sauce",s:"1 tbsp",c:10,p:1,cb:1,f:0},
+{n:"Teriyaki sauce",s:"2 tbsp",c:60,p:1,cb:12,f:0},
+{n:"Salsa",s:"2 tbsp",c:10,p:0,cb:2,f:0},
+{n:"Guacamole",s:"2 tbsp",c:50,p:1,cb:3,f:5},
+{n:"Pico de gallo",s:"2 tbsp",c:10,p:0,cb:2,f:0},
+{n:"Sour cream",s:"2 tbsp",c:60,p:1,cb:1,f:6},
+{n:"Cream cheese",s:"2 tbsp",c:100,p:2,cb:2,f:10},
+{n:"Olive oil",s:"1 tbsp",c:120,p:0,cb:0,f:14},
+{n:"Coconut oil",s:"1 tbsp",c:120,p:0,cb:0,f:14},
+{n:"Butter",s:"1 tbsp",c:100,p:0,cb:0,f:11},
+{n:"Ghee",s:"1 tbsp",c:130,p:0,cb:0,f:14},
+{n:"Cooking spray",s:"1 spray",c:0,p:0,cb:0,f:0},
+{n:"Worcestershire sauce",s:"1 tsp",c:5,p:0,cb:1,f:0},
+{n:"Oyster sauce",s:"1 tbsp",c:25,p:0,cb:4,f:0},
+{n:"Fish sauce",s:"1 tbsp",c:10,p:1,cb:1,f:0},
+{n:"Tahini",s:"2 tbsp",c:178,p:5,cb:6,f:16},
+// ── MIXED DISHES & BOWLS ──
+{n:"Burrito bowl, chicken (homemade)",s:"1 bowl",c:550,p:38,cb:65,f:12},
+{n:"Grain bowl, quinoa & veggies",s:"1 bowl",c:420,p:16,cb:58,f:14},
+{n:"Buddha bowl",s:"1 bowl",c:480,p:18,cb:62,f:16},
+{n:"Poke bowl, salmon",s:"1 bowl",c:550,p:32,cb:65,f:18},
+{n:"Teriyaki chicken bowl",s:"1 bowl",c:580,p:38,cb:72,f:12},
+{n:"Korean beef bowl (bulgogi)",s:"1 bowl",c:620,p:38,cb:72,f:16},
+{n:"Chicken fried rice",s:"1 cup",c:340,p:15,cb:42,f:12},
+{n:"Beef fried rice",s:"1 cup",c:370,p:17,cb:43,f:14},
+{n:"Vegetable fried rice",s:"1 cup",c:280,p:8,cb:45,f:8},
+{n:"Pad thai, chicken",s:"1 cup",c:350,p:20,cb:42,f:11},
+{n:"Pad thai, shrimp",s:"1 cup",c:320,p:18,cb:41,f:9},
+{n:"General Tso's chicken",s:"1 cup",c:430,p:22,cb:42,f:18},
+{n:"Kung pao chicken",s:"1 cup",c:390,p:26,cb:25,f:22},
+{n:"Orange chicken",s:"1 cup",c:450,p:20,cb:50,f:18},
+{n:"Beef & broccoli",s:"1 cup",c:310,p:22,cb:18,f:16},
+{n:"Lo mein, chicken",s:"1 cup",c:320,p:16,cb:42,f:9},
+{n:"Fried dumplings (potstickers)",s:"6 pieces",c:320,p:14,cb:36,f:14},
+{n:"Steamed dumplings",s:"6 pieces",c:220,p:12,cb:32,f:5},
+{n:"Chicken tikka masala",s:"1 cup",c:310,p:28,cb:16,f:15},
+{n:"Butter chicken",s:"1 cup",c:340,p:28,cb:16,f:17},
+{n:"Dal, red lentil",s:"1 cup",c:230,p:15,cb:38,f:3},
+{n:"Chana masala",s:"1 cup",c:280,p:14,cb:42,f:7},
+{n:"Saag paneer",s:"1 cup",c:320,p:14,cb:18,f:22},
+{n:"Naan, plain",s:"1 piece",c:260,p:9,cb:45,f:5},
+{n:"Basmati rice, cooked",s:"1 cup",c:210,p:4,cb:46,f:0},
+{n:"Enchiladas, cheese (2)",s:"2 enchiladas",c:520,p:22,cb:48,f:26},
+{n:"Enchiladas, chicken (2)",s:"2 enchiladas",c:480,p:32,cb:46,f:18},
+{n:"Tamale, pork",s:"1 tamale",c:285,p:10,cb:35,f:12},
+{n:"Pozole, red",s:"1 cup",c:220,p:18,cb:22,f:6},
+{n:"Carnitas",s:"4 oz",c:280,p:28,cb:0,f:18},
+{n:"Carne asada",s:"4 oz",c:230,p:28,cb:0,f:13},
+{n:"Chili con carne",s:"1 cup",c:290,p:22,cb:22,f:12},
+{n:"White bean chicken chili",s:"1 cup",c:260,p:24,cb:24,f:7},
+{n:"Spaghetti Bolognese",s:"1 cup",c:380,p:22,cb:46,f:12},
+{n:"Lasagna, meat",s:"1 piece (8 oz)",c:430,p:24,cb:40,f:18},
+{n:"Fettuccine Alfredo",s:"1 cup",c:490,p:16,cb:58,f:22},
+{n:"Pasta primavera",s:"1 cup",c:320,p:12,cb:48,f:9},
+{n:"Mac & cheese, homemade",s:"1 cup",c:400,p:16,cb:44,f:18},
+{n:"Chicken noodle soup, homemade",s:"1 cup",c:130,p:11,cb:14,f:3},
+{n:"Tomato basil soup",s:"1 cup",c:140,p:4,cb:18,f:6},
+{n:"French onion soup",s:"1 cup",c:240,p:11,cb:26,f:10},
+{n:"Clam chowder, New England",s:"1 cup",c:220,p:10,cb:23,f:9},
+{n:"Caesar salad",s:"1 large serving",c:360,p:10,cb:16,f:30},
+{n:"Greek salad",s:"1 large serving",c:280,p:8,cb:16,f:22},
+{n:"Cobb salad",s:"1 large serving",c:470,p:30,cb:10,f:35},
+{n:"Nicoise salad",s:"1 serving",c:350,p:24,cb:20,f:18},
+{n:"Chef salad",s:"1 large serving",c:380,p:22,cb:12,f:28},
+{n:"Taco salad",s:"1 serving",c:540,p:26,cb:40,f:30},
+{n:"BLT sandwich",s:"1 sandwich",c:400,p:16,cb:36,f:22},
+{n:"Club sandwich",s:"1 sandwich",c:560,p:32,cb:40,f:28},
+{n:"Reuben sandwich",s:"1 sandwich",c:640,p:32,cb:42,f:34},
+{n:"Turkey club",s:"1 sandwich",c:500,p:30,cb:38,f:22},
+{n:"Grilled cheese",s:"1 sandwich",c:400,p:14,cb:36,f:22},
+{n:"Egg salad sandwich",s:"1 sandwich",c:440,p:16,cb:34,f:28},
+{n:"Tuna salad sandwich",s:"1 sandwich",c:420,p:22,cb:36,f:18},
+{n:"Philly cheesesteak",s:"1 sandwich",c:600,p:35,cb:48,f:28},
+{n:"Meatball sub",s:"6 inch",c:530,p:26,cb:58,f:22},
+// ── INTERNATIONAL STAPLES ──
+{n:"Miso soup",s:"1 cup",c:35,p:2,cb:5,f:1},
+{n:"Edamame",s:"½ cup shelled",c:95,p:9,cb:7,f:4},
+{n:"Gyoza, pork (pan-fried)",s:"5 pieces",c:270,p:11,cb:30,f:12},
+{n:"Sushi, California roll (6 pcs)",s:"6 pieces",c:250,p:9,cb:38,f:7},
+{n:"Sushi, Spicy Tuna roll (6 pcs)",s:"6 pieces",c:290,p:14,cb:38,f:8},
+{n:"Sushi, Salmon nigiri (2 pcs)",s:"2 pieces",c:130,p:10,cb:18,f:2},
+{n:"Bibimbap",s:"1 bowl",c:490,p:28,cb:68,f:13},
+{n:"Kimchi fried rice",s:"1 cup",c:310,p:12,cb:48,f:8},
+{n:"Injera",s:"1 piece",c:170,p:5,cb:35,f:1},
+{n:"Pupusas, cheese",s:"1 pupusa",c:220,p:8,cb:30,f:8},
+{n:"Plantains, fried (tostones)",s:"4 pieces",c:150,p:1,cb:27,f:5},
+{n:"Rice & beans, Cuban style",s:"1 cup",c:260,p:10,cb:47,f:4},
+{n:"Pho, beef (broth & noodles)",s:"1 bowl",c:295,p:22,cb:38,f:6},
+{n:"Bun bo hue",s:"1 bowl",c:310,p:24,cb:36,f:8},
+{n:"Banh mi",s:"1 sandwich",c:550,p:26,cb:66,f:20},
+{n:"Congee, plain",s:"1 cup",c:90,p:3,cb:19,f:0},
+{n:"Natto",s:"½ cup",c:185,p:15,cb:12,f:10},
+{n:"Falafel",s:"3 pieces",c:180,p:7,cb:20,f:9},
+{n:"Shawarma wrap, chicken",s:"1 wrap",c:480,p:30,cb:45,f:18},
+{n:"Tabouleh",s:"½ cup",c:90,p:3,cb:15,f:3},
+{n:"Baba ganoush",s:"2 tbsp",c:45,p:1,cb:3,f:3},
+{n:"Dolmas (stuffed grape leaves)",s:"3 pieces",c:150,p:3,cb:22,f:6},
+{n:"Moussaka",s:"1 serving (8 oz)",c:380,p:20,cb:26,f:22},
+{n:"Spanakopita",s:"1 piece",c:260,p:8,cb:22,f:16},
+{n:"Pierogi, potato & cheese",s:"3 pierogis",c:280,p:8,cb:44,f:8},
+{n:"Stroganoff, beef",s:"1 cup",c:390,p:26,cb:20,f:24},
+{n:"Goulash",s:"1 cup",c:310,p:22,cb:24,f:14},
+{n:"Paella",s:"1 cup",c:360,p:22,cb:46,f:9},
+{n:"Empanada, beef",s:"1 piece",c:260,p:10,cb:28,f:12},
+{n:"Jerk chicken",s:"4 oz",c:220,p:28,cb:6,f:10},
 ];
 
 // ── STATE ──────────────────────────────────────────────────────
-let S={profile:null,log:{},customFoods:[]};
+let S={profile:null,log:{},customFoods:[],weightLog:{}};
 let curDate=todayKey(), activeMeal=null, pendingFood=null, searchMode='local';
 let sTmr=null, charts={};
 
@@ -775,7 +1223,7 @@ function pad(n){return String(n).padStart(2,'0');}
 function offsetKey(k,d){const[y,m,dd]=k.split('-').map(Number);const dt=new Date(y,m-1,dd+d);return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;}
 function fmtDate(k){const[y,m,d]=k.split('-').map(Number);const dt=new Date(y,m-1,d);if(k===todayKey())return 'Today · '+dt.toLocaleDateString('en-US',{month:'long',day:'numeric'});return dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
 function r(n){return Math.round(n);}
-function load(){try{const s=localStorage.getItem('edbg3');if(s)S=JSON.parse(s);}catch(e){}}
+function load(){try{const s=localStorage.getItem('edbg3');if(s){S=JSON.parse(s);if(!S.weightLog)S.weightLog={};if(S.profile&&!S.profile.goals)S.profile.goals={};}}catch(e){}}
 function save(){localStorage.setItem('edbg3',JSON.stringify(S));}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
@@ -794,6 +1242,9 @@ function switchView(v,btn){
 function changeDay(d){const nk=offsetKey(curDate,d);if(nk>todayKey())return;curDate=nk;renderToday();}
 function renderToday(){
   document.getElementById('date-display').textContent=fmtDate(curDate);
+  // Onboarding banner
+  const banner=document.getElementById('onboard-banner');
+  if(banner)banner.style.display=S.profile?'none':'flex';
   const meals=['breakfast','lunch','dinner','snacks'];
   let tC=0,tP=0,tCb=0,tF=0;
   meals.forEach(m=>{
@@ -819,7 +1270,7 @@ function renderToday(){
   document.getElementById('s-prot').textContent=r(tP);
   document.getElementById('s-carb').textContent=r(tCb);
   document.getElementById('s-fat').textContent=r(tF);
-  const tdee=S.profile?calcTDEE(S.profile):null;
+  const tdee=getEffectiveTDEE();
   const dv=document.getElementById('delta-val');
   const bf=document.getElementById('bar-fill');
   if(tdee){
@@ -828,7 +1279,7 @@ function renderToday(){
     if(delta>0){bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='var(--accent-b)';dv.textContent=`+${r(delta)} kcal surplus`;dv.className='delta-val up';}
     else if(delta<0){const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='var(--accent-a)';dv.textContent=`${r(delta)} kcal deficit`;dv.className='delta-val dn';}
     else{bf.style.width='0';dv.textContent='Right at maintenance';dv.className='delta-val';}
-  }else{bf.style.width='0';dv.textContent='Set up your profile →';dv.className='delta-val';}
+  }else{bf.style.width='0';dv.textContent='Profile not set';dv.className='delta-val';}
 }
 function delEntry(m,i){S.log[curDate][m].splice(i,1);save();renderToday();}
 
@@ -838,12 +1289,57 @@ function openSearch(meal){
   const lbl={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snacks'};
   document.getElementById('sm-lbl').textContent=lbl[meal];
   document.getElementById('sm-q').value='';
-  document.getElementById('sm-results').innerHTML='';
+  document.getElementById('sm-results').innerHTML='<div id="sm-suggestions"></div>';
   document.getElementById('sm-api-section').style.display='none';
   document.getElementById('sm-api-results').innerHTML='';
+  document.getElementById('sm-api-btn').style.display='';
+  document.getElementById('sm-api-btn').textContent='🌐 Search Open Food Facts database';
+  document.getElementById('sm-api-btn').disabled=false;
   showSrch();
+  renderSuggestions(meal);
   document.getElementById('search-modal').classList.add('open');
   setTimeout(()=>document.getElementById('sm-q').focus(),100);
+}
+
+function renderSuggestions(meal){
+  const el=document.getElementById('sm-suggestions');
+  if(!el)return;
+  let html='';
+  // Copy yesterday's meal
+  const yd=offsetKey(curDate,-1);
+  const ydMeal=((S.log[yd]||{})[meal])||[];
+  if(ydMeal.length){
+    html+=`<button class="copy-meal-btn" onclick="copyYesterdayMeal('${meal}')">📋 Copy yesterday's ${meal} (${ydMeal.length} item${ydMeal.length>1?'s':''})</button>`;
+  }
+  // Recent foods (last 7 days, deduplicated, capped at 6)
+  const seen=new Set(), recent=[];
+  const meals=['breakfast','lunch','dinner','snacks'];
+  for(let i=1;i<=7&&recent.length<6;i++){
+    const k=offsetKey(curDate,-i);
+    const dayLog=S.log[k]||{};
+    meals.forEach(m=>(dayLog[m]||[]).forEach(e=>{
+      if(!seen.has(e.name)){seen.add(e.name);if(recent.length<6)recent.push(e);}
+    }));
+  }
+  if(recent.length){
+    html+='<div class="results-section-lbl">Recently Used</div><div class="results-list">';
+    html+=recent.map(f=>{
+      const fo={name:f.name,serving:f.serving,calories:f.calories/f.servings,protein:f.protein/f.servings,carbs:f.carbs/f.servings,fat:f.fat/f.servings};
+      return`<div class="result-item" onclick='pickFood(${JSON.stringify(fo)})'><div><div class="result-name">${f.name}</div><div class="result-meta">${f.serving} · P ${r(fo.protein)}g · C ${r(fo.carbs)}g · F ${r(fo.fat)}g</div></div><div class="result-cal">${r(fo.calories)}</div></div>`;
+    }).join('');
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+
+function copyYesterdayMeal(meal){
+  const yd=offsetKey(curDate,-1);
+  const ydMeal=((S.log[yd]||{})[meal])||[];
+  if(!ydMeal.length)return;
+  if(!S.log[curDate])S.log[curDate]={};
+  if(!S.log[curDate][meal])S.log[curDate][meal]=[];
+  ydMeal.forEach(e=>S.log[curDate][meal].push({...e}));
+  save();closeSM();renderToday();toast(`Yesterday's ${meal} copied!`);
 }
 function closeSM(){document.getElementById('search-modal').classList.remove('open');activeMeal=null;pendingFood=null;}
 function showSrch(){
@@ -861,7 +1357,14 @@ function onSearch(){
   clearTimeout(sTmr);
   const q=document.getElementById('sm-q').value.trim();
   const apiSection=document.getElementById('sm-api-section');
-  if(!q){document.getElementById('sm-results').innerHTML='';apiSection.style.display='none';return;}
+  const sug=document.getElementById('sm-suggestions');
+  if(!q){
+    if(sug)sug.style.display='block';
+    document.getElementById('sm-results').querySelectorAll('.results-list,.results-section-lbl,.no-results').forEach(e=>e.remove());
+    apiSection.style.display='none';
+    return;
+  }
+  if(sug)sug.style.display='none';
   // Reset api section to just show the button (not results)
   document.getElementById('sm-api-results').innerHTML='';
   document.getElementById('sm-api-btn').textContent='🌐 Search Open Food Facts database';
@@ -1000,7 +1503,9 @@ function calcTDEE(p){const wk=p.weight*0.453592,hc=p.height*2.54;const bmr=p.sex
 function saveProfile(){
   const age=parseInt(document.getElementById('p-age').value),sex=document.getElementById('p-sex').value,weight=parseFloat(document.getElementById('p-weight').value),height=parseFloat(document.getElementById('p-height').value),activity=document.getElementById('p-activity').value;
   if(!age||!weight||!height){toast('Please fill in all fields.');return;}
-  S.profile={age,sex,weight,height,activity};save();renderProfile();renderToday();toast('Profile saved!');
+  S.profile={age,sex,weight,height,activity};
+  if(!S.weightLog[todayKey()])S.weightLog[todayKey()]=weight;
+  save();renderProfile();renderToday();toast('Profile saved!');
 }
 function renderProfile(){
   if(!S.profile)return;
@@ -1016,61 +1521,246 @@ function renderProfile(){
   document.getElementById('profile-result').classList.add('visible');
 }
 
-// ── TRENDS ─────────────────────────────────────────────────────
-function sumDay(k){const m=S.log[k]||{},r2={cal:0,protein:0,carbs:0,fat:0};['breakfast','lunch','dinner','snacks'].forEach(x=>(m[x]||[]).forEach(e=>{r2.cal+=e.calories;r2.protein+=e.protein;r2.carbs+=e.carbs;r2.fat+=e.fat;}));return r2;}
+function calcTDEE(p){
+  const wk=p.weight*0.453592, hc=p.height*2.54, act=parseFloat(p.activity);
+  let bmr;
+  if(p.bodyFat&&p.bodyFat>0){
+    // Katch-McArdle: BMR = 370 + (21.6 × LBM in kg)
+    const lbm=wk*(1-p.bodyFat/100);
+    bmr=370+21.6*lbm;
+  } else {
+    // Mifflin-St Jeor
+    bmr=p.sex==='male'?10*wk+6.25*hc-5*p.age+5:10*wk+6.25*hc-5*p.age-161;
+  }
+  return Math.round(bmr*act);
+}
+function calcTDEEForActivity(p, actVal){
+  const wk=p.weight*0.453592, hc=p.height*2.54, act=parseFloat(actVal);
+  let bmr;
+  if(p.bodyFat&&p.bodyFat>0){
+    const lbm=wk*(1-p.bodyFat/100);
+    bmr=370+21.6*lbm;
+  } else {
+    bmr=p.sex==='male'?10*wk+6.25*hc-5*p.age+5:10*wk+6.25*hc-5*p.age-161;
+  }
+  return Math.round(bmr*act);
+}
+function getEffectiveTDEE(){
+  if(!S.profile)return null;
+  if(S.profile.goals&&S.profile.goals.cal)return S.profile.goals.cal;
+  return calcTDEE(S.profile);
+}
+function liveCalc(){
+  const age=parseInt(document.getElementById('p-age').value);
+  const sex=document.getElementById('p-sex').value;
+  const weight=parseFloat(document.getElementById('p-weight').value);
+  const height=parseFloat(document.getElementById('p-height').value);
+  const bf=parseFloat(document.getElementById('p-bf').value)||0;
+  const activity=document.getElementById('p-activity').value;
+  if(!age||!weight||!height)return;
+  const p={age,sex,weight,height,bodyFat:bf,activity};
+  const tdee=calcTDEE(p);
+  const formula=bf>0?'Katch-McArdle':'Mifflin-St Jeor';
+  document.getElementById('p-tdee').textContent=tdee+' kcal';
+  document.getElementById('p-formula-lbl').textContent='calories/day · '+formula+(bf>0?' (using body fat %)':'');
+  document.getElementById('profile-result').classList.add('visible');
+  // Activity preview table
+  const levels=[
+    {v:'1.2',lbl:'Sedentary'},
+    {v:'1.375',lbl:'Lightly active'},
+    {v:'1.55',lbl:'Moderately active'},
+    {v:'1.725',lbl:'Very active'},
+    {v:'1.9',lbl:'Extra active'}
+  ];
+  document.getElementById('p-activity-preview').innerHTML=levels.map(l=>{
+    const est=calcTDEEForActivity(p,l.v);
+    const isActive=l.v===activity;
+    return `<div class="pap-row${isActive?' active':''}"><span class="pap-lbl">${l.lbl}</span><span class="pap-val${isActive?' active':''}">${est} kcal</span></div>`;
+  }).join('');
+}
+function saveGoals(){
+  if(!S.profile)return;
+  S.profile.goals={
+    cal:parseInt(document.getElementById('g-cal').value)||0,
+    prot:parseInt(document.getElementById('g-prot').value)||0,
+    carb:parseInt(document.getElementById('g-carb').value)||0,
+    fat:parseInt(document.getElementById('g-fat').value)||0,
+    fiber:parseInt(document.getElementById('g-fiber').value)||0
+  };
+  save();
+}
+function saveProfile(){
+  const age=parseInt(document.getElementById('p-age').value),sex=document.getElementById('p-sex').value,weight=parseFloat(document.getElementById('p-weight').value),height=parseFloat(document.getElementById('p-height').value),activity=document.getElementById('p-activity').value;
+  if(!age||!weight||!height){toast('Please fill in age, weight, and height.');return;}
+  const bf=parseFloat(document.getElementById('p-bf').value)||0;
+  const name=document.getElementById('p-name').value.trim();
+  const prevGoals=S.profile&&S.profile.goals?S.profile.goals:{};
+  S.profile={age,sex,weight,height,activity,bodyFat:bf,name,goals:prevGoals};
+  if(!S.weightLog[todayKey()])S.weightLog[todayKey()]=weight;
+  save();renderProfile();renderToday();toast('Profile saved!');
+}
+function renderProfile(){
+  if(!S.profile)return;
+  const p=S.profile;
+  if(document.getElementById('p-name'))document.getElementById('p-name').value=p.name||'';
+  document.getElementById('p-age').value=p.age;
+  document.getElementById('p-sex').value=p.sex;
+  document.getElementById('p-weight').value=p.weight;
+  document.getElementById('p-height').value=p.height;
+  document.getElementById('p-activity').value=p.activity;
+  if(document.getElementById('p-bf'))document.getElementById('p-bf').value=p.bodyFat||'';
+  // Goals
+  const g=p.goals||{};
+  if(document.getElementById('g-cal'))document.getElementById('g-cal').value=g.cal||'';
+  if(document.getElementById('g-prot'))document.getElementById('g-prot').value=g.prot||'';
+  if(document.getElementById('g-carb'))document.getElementById('g-carb').value=g.carb||'';
+  if(document.getElementById('g-fat'))document.getElementById('g-fat').value=g.fat||'';
+  if(document.getElementById('g-fiber'))document.getElementById('g-fiber').value=g.fiber||'';
+  // Header name
+  const hn=document.getElementById('header-name');
+  if(hn)hn.textContent=p.name?`· ${p.name}`:'';
+  liveCalc();
+}
+
+// ── WEIGHT LOG ─────────────────────────────────────────────────
+function openWeightModal(){
+  const existing=S.weightLog[todayKey()]||'';
+  document.getElementById('wt-input').value=existing;
+  document.getElementById('wt-date-lbl').textContent='Logging for: '+fmtDate(todayKey());
+  document.getElementById('weight-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('wt-input').focus(),100);
+}
+function closeWeightModal(){document.getElementById('weight-modal').classList.remove('open');}
+function saveWeight(){
+  const v=parseFloat(document.getElementById('wt-input').value);
+  if(!v||v<50||v>600){toast('Please enter a valid weight.');return;}
+  S.weightLog[todayKey()]=v;save();closeWeightModal();
+  toast('Weight saved!');
+  if(document.getElementById('view-trends').classList.contains('active'))renderTrends();
+}
+
+function sumDay(k){
+  const m=S.log[k]||{},r2={cal:0,protein:0,carbs:0,fat:0,fiber:0};
+  ['breakfast','lunch','dinner','snacks'].forEach(x=>(m[x]||[]).forEach(e=>{
+    r2.cal+=e.calories;r2.protein+=e.protein;r2.carbs+=e.carbs;r2.fat+=e.fat;r2.fiber+=(e.fiber||0);
+  }));
+  return r2;
+}
 function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0;}
+function baseOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(60,110,160,0.07)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB',maxTicksLimit:10}},y:{grid:{color:'rgba(60,110,160,0.09)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB'}}}};}
+function dayLbl(k){const[,m,d]=k.split('-');return `${+m}/${+d}`;}
+
+// Group days into weeks and return weekly average bars
+function toWeeklyAvg(days, accessor){
+  const weeks=[];let chunk=[];
+  days.forEach((k,i)=>{chunk.push(k);if(chunk.length===7||i===days.length-1){weeks.push(chunk);chunk=[];}});
+  return{
+    labels:weeks.map(w=>{const[,m,d]=w[0].split('-');const[,m2,d2]=w[w.length-1].split('-');return `${+m}/${+d}–${+m2}/${+d2}`;}),
+    data:weeks.map(w=>r(avg(w.map(k=>accessor(sumDay(k))))))
+  };
+}
+
 function renderTrends(){
-  const tdee=S.profile?calcTDEE(S.profile):null;
+  const tdee=getEffectiveTDEE();
   const allK=Object.keys(S.log).filter(k=>Object.values(S.log[k]).some(m=>m.length)).sort();
   const l7=allK.slice(-7),l30=allK.slice(-30);
   document.getElementById('days-n').textContent=allK.length;
   function setR(did,sid,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className='rc-val '+(d>50?'ab':d<-50?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} kcal/day`;}
   setR('r7d','r7s',l7);setR('r30d','r30s',l30);
   if(l7.length)document.getElementById('r7c').textContent=r(avg(l7.map(k=>sumDay(k).cal)));
-  const disp=allK.slice(-30);
-  const lbls=disp.map(k=>{const[,m,d]=k.split('-');return `${+m}/${+d}`;});
-  const calD=disp.map(k=>r(sumDay(k).cal));
-  const dltD=tdee?disp.map(k=>r(sumDay(k).cal-tdee)):[];
-  function baseOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(60,110,160,0.07)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB'}},y:{grid:{color:'rgba(60,110,160,0.09)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB'}}}};}
+
+  // ── Calorie Balance chart ──
+  const balN=parseInt(document.getElementById('bal-range').value);
+  const balDays=allK.slice(-balN);
+  const useWeekly=balN>=30;
+  let balLbls,dltD;
+  if(useWeekly){
+    const wk=toWeeklyAvg(balDays,s=>s.cal);
+    balLbls=wk.labels;
+    dltD=tdee?wk.data.map(v=>r(v-tdee)):wk.data;
+  } else {
+    balLbls=balDays.map(dayLbl);
+    dltD=tdee?balDays.map(k=>r(sumDay(k).cal-tdee)):balDays.map(k=>r(sumDay(k).cal));
+  }
+  const balColors=dltD.map(v=>Math.abs(v)<=50?'rgba(90,158,122,0.75)':v>0?'rgba(184,137,74,0.75)':'rgba(58,133,168,0.75)');
+  const balBorders=dltD.map(v=>Math.abs(v)<=50?'rgba(90,158,122,1)':v>0?'rgba(184,137,74,1)':'rgba(58,133,168,1)');
   if(charts.d)charts.d.destroy();
-  charts.d=new Chart(document.getElementById('chart-delta').getContext('2d'),{type:'bar',data:{labels:lbls,datasets:[{label:'Delta',data:dltD,backgroundColor:dltD.map(v=>v>0?'rgba(184,137,74,0.75)':'rgba(58,133,168,0.75)'),borderColor:dltD.map(v=>v>0?'rgba(184,137,74,1)':'rgba(58,133,168,1)'),borderWidth:1.5,borderRadius:4}]},options:baseOpts()});
-  if(charts.c)charts.c.destroy();
-  charts.c=new Chart(document.getElementById('chart-cal').getContext('2d'),{type:'line',data:{labels:lbls,datasets:[{label:'Calories',data:calD,borderColor:'var(--accent-a)',backgroundColor:'rgba(58,133,168,0.08)',fill:true,tension:0.35,pointBackgroundColor:'var(--accent-a)',pointRadius:4},...(tdee?[{label:'Maintenance',data:Array(disp.length).fill(tdee),borderColor:'rgba(184,137,74,0.5)',borderDash:[5,5],borderWidth:1.5,pointRadius:0,fill:false}]:[])]},options:baseOpts()});
-  const s30=l30.reduce((a,k)=>{const s=sumDay(k);a.p+=s.protein;a.c+=s.carbs;a.f+=s.fat;return a},{p:0,c:0,f:0});
-  if(charts.m)charts.m.destroy();
-  charts.m=new Chart(document.getElementById('chart-macro').getContext('2d'),{type:'doughnut',data:{labels:['Protein','Carbs','Fat'],datasets:[{data:[r(s30.p),r(s30.c),r(s30.f)],backgroundColor:['rgba(58,133,168,0.8)','rgba(184,137,74,0.8)','rgba(74,140,130,0.8)'],borderColor:['var(--accent-a)','var(--accent-b)','#4A8C82'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{family:'Nunito',size:12},color:'#4A6A80'}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}g`}}}}});
+  charts.d=new Chart(document.getElementById('chart-delta').getContext('2d'),{type:'bar',data:{labels:balLbls,datasets:[{data:dltD,backgroundColor:balColors,borderColor:balBorders,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.raw>0?'+':'')+ctx.raw+' kcal'+(useWeekly?' (weekly avg)':'')}}}}});
+
+  // ── 2×2 Macro sparklines ──
+  const macN=parseInt(document.getElementById('macro-range').value);
+  const macDays=allK.slice(-macN);
+  const goals=(S.profile&&S.profile.goals)||{};
+  const macroSpecs=[
+    {key:'protein',field:'prot',color:'rgba(58,133,168',goalKey:'prot',avgId:'sp-avg-prot',chartId:'chart-prot'},
+    {key:'carbs',field:'carb',color:'rgba(184,137,74',goalKey:'carb',avgId:'sp-avg-carb',chartId:'chart-carb'},
+    {key:'fat',field:'fat',color:'rgba(74,140,130',goalKey:'fat',avgId:'sp-avg-fat',chartId:'chart-fat'},
+    {key:'fiber',field:'fiber',color:'rgba(130,100,180',goalKey:'fiber',avgId:'sp-avg-fiber',chartId:'chart-fiber'}
+  ];
+  const sparkKeys=macN>=30?toWeeklyAvg(macDays,s=>s).labels&&(()=>{
+    // for weekly sparklines just use daily — weekly grouping for sparklines is too compressed
+    return macDays;
+  })():macDays;
+  const spLbls=macDays.map(dayLbl);
+  macroSpecs.forEach(spec=>{
+    const data=macDays.map(k=>r(sumDay(k)[spec.key]));
+    const dayAvg=r(avg(data));
+    document.getElementById(spec.avgId).textContent=dayAvg+'g avg/day';
+    const goal=goals[spec.goalKey]||0;
+    const datasets=[{data,backgroundColor:`${spec.color},0.65)`,borderColor:`${spec.color},1)`,borderWidth:1.5,borderRadius:3,type:'bar'}];
+    if(goal){datasets.push({data:Array(data.length).fill(goal),borderColor:`${spec.color},0.5)`,borderDash:[4,3],borderWidth:1.5,pointRadius:0,fill:false,type:'line'});}
+    if(charts[spec.chartId])charts[spec.chartId].destroy();
+    charts[spec.chartId]=new Chart(document.getElementById(spec.chartId).getContext('2d'),{type:'bar',data:{labels:spLbls,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'g'+(goal&&ctx.datasetIndex===0?` (goal: ${goal}g)`:'')}}}  ,scales:{x:{display:false},y:{grid:{color:'rgba(60,110,160,0.07)'},ticks:{font:{family:'Nunito',size:10},color:'#8AAABB',maxTicksLimit:4}}}}});
+  });
+
+  // ── Weight chart ──
+  const wtKeys=Object.keys(S.weightLog).sort().slice(-90);
+  const wtEmpty=document.getElementById('wt-empty');
+  const wtWrap=document.getElementById('wt-chart-wrap');
+  if(wtKeys.length>=1){
+    wtEmpty.style.display='none';wtWrap.style.display='block';
+    if(charts.w)charts.w.destroy();
+    charts.w=new Chart(document.getElementById('chart-weight').getContext('2d'),{type:'line',data:{labels:wtKeys.map(dayLbl),datasets:[{data:wtKeys.map(k=>S.weightLog[k]),borderColor:'var(--accent-b)',backgroundColor:'rgba(184,137,74,0.08)',fill:true,tension:0.35,pointBackgroundColor:'var(--accent-b)',pointRadius:wtKeys.length===1?6:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} lbs`}}},scales:{x:{grid:{color:'rgba(60,110,160,0.07)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB',maxTicksLimit:10}},y:{grid:{color:'rgba(60,110,160,0.09)'},ticks:{font:{family:'Nunito',size:11},color:'#8AAABB',callback:v=>v+' lbs'}}}}});
+  }else{wtEmpty.style.display='block';wtWrap.style.display='none';}
 }
 
 // ── EXPORT / IMPORT ────────────────────────────────────────────
-function exportData(){
-  let csv='date,meal,food,serving,servings,calories,protein,carbs,fat\n';
-  Object.entries(S.log).sort().forEach(([d,meals])=>['breakfast','lunch','dinner','snacks'].forEach(m=>(meals[m]||[]).forEach(e=>csv+=`"${d}","${m}","${e.name}","${e.serving}",${e.servings},${r(e.calories)},${r(e.protein)},${r(e.carbs)},${r(e.fat)}\n`)));
-  dl(csv,'edbg-log.csv');
-  if(S.customFoods.length){let cf='name,serving,calories,protein,carbs,fat\n';S.customFoods.forEach(f=>cf+=`"${f.name}","${f.serving}",${f.calories},${f.protein},${f.carbs},${f.fat}\n`);setTimeout(()=>dl(cf,'edbg-custom-foods.csv'),400);}
-  toast('Data exported!');
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='edbg-backup.json';a.click();
+  toast('Full backup saved!');
 }
-function dl(csv,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=name;a.click();}
 function importData(evt){
   const file=evt.target.files[0];if(!file)return;
   const rdr=new FileReader();
   rdr.onload=e=>{
-    const lines=e.target.result.split('\n').filter(l=>l.trim());
-    const hdr=lines[0].toLowerCase();
-    if(hdr.includes('date,meal')){let n=0;for(let i=1;i<lines.length;i++){const c=pCSV(lines[i]);if(c.length<9)continue;const[date,meal,,serving,servings,calories,protein,carbs,fat]=c;const nm=c[2];if(!S.log[date])S.log[date]={};if(!S.log[date][meal])S.log[date][meal]=[];S.log[date][meal].push({name:nm,serving,servings:+servings,calories:+calories,protein:+protein,carbs:+carbs,fat:+fat});n++;}save();renderToday();toast(`Imported ${n} entries!`);}
-    else if(hdr.includes('name,serving')){let n=0;for(let i=1;i<lines.length;i++){const c=pCSV(lines[i]);if(c.length<6)continue;const[nm,sv,cal,p,cb,f]=c;S.customFoods.push({id:Date.now()+i,name:nm,serving:sv,calories:+cal,protein:+p,carbs:+cb,fat:+f});n++;}save();renderCF();toast(`Imported ${n} custom foods!`);}
-    else toast('Unrecognized CSV format.');
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(!parsed.log&&!parsed.profile&&!parsed.customFoods){toast('Unrecognized backup format.');return;}
+      S.log=parsed.log||{};
+      S.profile=parsed.profile||null;
+      S.customFoods=parsed.customFoods||[];
+      S.weightLog=parsed.weightLog||{};
+      save();renderToday();if(S.profile)renderProfile();renderCF();
+      toast('Backup restored!');
+    }catch(err){toast('Could not read backup file.');}
   };
   rdr.readAsText(file);evt.target.value='';
 }
-function pCSV(l){const r=[];let c='',q=false;for(const ch of l){if(ch==='"'){q=!q;}else if(ch===','&&!q){r.push(c.trim());c='';}else c+=ch;}r.push(c.trim());return r;}
 function clearLog(){if(!confirm('Clear all food log data?'))return;S.log={};save();renderToday();toast('Log cleared.');}
 
 // ── MODAL CLOSE ON OVERLAY ─────────────────────────────────────
 document.getElementById('search-modal').addEventListener('click',function(e){if(e.target===this)closeSM();});
 document.getElementById('create-modal').addEventListener('click',function(e){if(e.target===this)closeCreate();});
+document.getElementById('weight-modal').addEventListener('click',function(e){if(e.target===this)closeWeightModal();});
+
+// ── STICKY HEADER HEIGHT ───────────────────────────────────────
+function fixStickyPad(){const h=document.getElementById('sticky-shell').offsetHeight;document.querySelector('.wrap').style.paddingTop=(h+16)+'px';}
+window.addEventListener('resize',fixStickyPad);
 
 // ── INIT ───────────────────────────────────────────────────────
-load();renderToday();if(S.profile)renderProfile();renderCF();
+load();renderToday();if(S.profile){renderProfile();}renderCF();
+setTimeout(fixStickyPad,100);
 </script>
 </body>
 </html>
