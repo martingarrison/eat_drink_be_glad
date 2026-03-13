@@ -415,6 +415,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" id="sm-q" autocomplete="off" oninput="onSearch()" placeholder="Search foods…"></div>
     <div class="modal-scroll" id="sm-results">
       <div id="sm-suggestions"></div>
+      <div id="sm-local-results"></div>
       <div id="sm-api-results"></div>
     </div>
     <div id="sm-api-section" style="flex-shrink:0;padding-top:6px;display:none;">
@@ -1329,7 +1330,7 @@ function switchView(v,btn){
 }
 
 // ── TODAY ──────────────────────────────────────────────────────
-function changeDay(d){const nk=offsetKey(curDate,d);if(nk>todayKey())return;curDate=nk;renderToday();}
+function changeDay(d){curDate=offsetKey(curDate,d);renderToday();}
 function renderToday(){
   document.getElementById('date-display').textContent=fmtDate(curDate);
   // Onboarding banner
@@ -1377,12 +1378,14 @@ function delEntry(m,i){S.log[curDate][m].splice(i,1);save();renderToday();}
 // ── SEARCH MODAL ───────────────────────────────────────────────
 function openSearch(meal){
   activeMeal=meal;
+  editMode=null;
   const lbl={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snacks'};
   document.getElementById('sm-lbl').textContent=lbl[meal];
   document.getElementById('sm-q').value='';
-  document.getElementById('sm-results').innerHTML='<div id="sm-suggestions"></div>';
+  // Reset scroll area — preserve sm-api-results div since it's now inside sm-results
+  const smResults=document.getElementById('sm-results');
+  smResults.innerHTML='<div id="sm-suggestions"></div><div id="sm-local-results"></div><div id="sm-api-results"></div>';
   document.getElementById('sm-api-section').style.display='none';
-  document.getElementById('sm-api-results').innerHTML='';
   document.getElementById('sm-api-btn').style.display='';
   document.getElementById('sm-api-btn').textContent='🌐 Search Open Food Facts database';
   document.getElementById('sm-api-btn').disabled=false;
@@ -1449,14 +1452,15 @@ function onSearch(){
   const q=document.getElementById('sm-q').value.trim();
   const apiSection=document.getElementById('sm-api-section');
   const sug=document.getElementById('sm-suggestions');
+  const local=document.getElementById('sm-local-results');
   if(!q){
     if(sug)sug.style.display='block';
-    document.getElementById('sm-results').querySelectorAll('.results-list,.results-section-lbl,.no-results').forEach(e=>e.remove());
+    if(local)local.innerHTML='';
+    document.getElementById('sm-api-results').innerHTML='';
     apiSection.style.display='none';
     return;
   }
   if(sug)sug.style.display='none';
-  // Reset api results and restore button
   document.getElementById('sm-api-results').innerHTML='';
   const apiBtn=document.getElementById('sm-api-btn');
   apiBtn.textContent='🌐 Search Open Food Facts database';
@@ -1478,7 +1482,8 @@ function tokenMatch(query, name){
 function doUnified(q){
   const custHits=S.customFoods.filter(f=>tokenMatch(q,f.name));
   const localHits=LF.filter(f=>tokenMatch(q,f.n)).slice(0,15);
-  const el=document.getElementById('sm-results');
+  const el=document.getElementById('sm-local-results');
+  if(!el)return;
   let html='';
   if(!custHits.length&&!localHits.length){
     el.innerHTML=`<div class="no-results"><p>No results for "<strong>${q}</strong>"</p><button class="btn btn-amber" onclick="openCreate('${q.replace(/'/g,"\\'")}')">+ Create "${q}"</button></div>`;
