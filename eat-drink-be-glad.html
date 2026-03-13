@@ -177,7 +177,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .wt-update-btn{display:flex;align-items:center;gap:6px;background:rgba(58,133,168,0.09);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;margin-top:12px;transition:all 0.15s;}
 .wt-update-btn:hover{border-color:var(--accent-a);color:var(--accent-a);}
 .wt-empty{padding:20px;text-align:center;font-size:13px;color:var(--text-light);font-style:italic;}
+.log-edit{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-light);padding:2px 4px;border-radius:5px;transition:color 0.15s;line-height:1;}
+.log-edit:hover{color:var(--accent-a);}
+#pt-sv-sel{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;-webkit-appearance:none;appearance:none;}
+#pt-sv-sel:focus{outline:none;border-color:var(--accent-a);}
+#pt-sv-custom{padding:8px 11px;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;}
 .override-divider{display:flex;align-items:center;gap:10px;margin:16px 0 12px;color:var(--text-light);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+.override-divider::before,.override-divider::after{content:'';flex:1;height:1px;background:var(--border);}
 .override-divider::before,.override-divider::after{content:'';flex:1;height:1px;background:var(--border);}
 @media(max-width:580px){
   .summary-grid{grid-template-columns:1fr 1fr;}
@@ -409,15 +415,35 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" id="sm-q" autocomplete="off" oninput="onSearch()" placeholder="Search foods…"></div>
     <div class="modal-scroll" id="sm-results">
       <div id="sm-suggestions"></div>
+      <div id="sm-api-results"></div>
     </div>
     <div id="sm-api-section" style="flex-shrink:0;padding-top:6px;display:none;">
       <button class="sm-db-link" onclick="doAPIFromLink()" id="sm-api-btn">🌐 Search Open Food Facts database</button>
-      <div id="sm-api-results" style="margin-top:6px;"></div>
     </div>
     <div class="portion-step" id="step-portion">
       <div class="pt-name" id="pt-name"></div>
       <div class="pt-meta" id="pt-meta"></div>
-      <div class="fg" style="margin-bottom:4px;"><label>Servings</label><input type="number" id="pt-sv" value="1" min="0.1" step="0.1" oninput="updPrev()"></div>
+      <div class="fg" style="margin-bottom:4px;">
+        <label>Servings</label>
+        <div style="display:flex;gap:7px;align-items:center;">
+          <select id="pt-sv-sel" onchange="onSvSel()" style="flex:1;">
+            <option value="0.25">¼</option>
+            <option value="0.33">⅓</option>
+            <option value="0.5">½</option>
+            <option value="0.67">⅔</option>
+            <option value="0.75">¾</option>
+            <option value="1" selected>1</option>
+            <option value="1.5">1½</option>
+            <option value="2">2</option>
+            <option value="2.5">2½</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <input type="number" id="pt-sv-custom" value="1" min="0.1" step="0.1" oninput="updPrev()" style="display:none;flex:1;">
+        </div>
+      </div>
       <div class="mprev">
         <div class="mpi"><div class="mv" id="pp-cal">—</div><div class="ml">kcal</div></div>
         <div class="mpi"><div class="mv" id="pp-p">—</div><div class="ml">protein</div></div>
@@ -425,8 +451,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="mpi"><div class="mv" id="pp-f">—</div><div class="ml">fat</div></div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="backToSearch()">← Back</button>
-        <button class="btn btn-primary" onclick="confirmAdd()">Add to Log</button>
+        <button class="btn btn-secondary" id="pt-back-btn" onclick="backToSearch()">← Back</button>
+        <button class="btn btn-primary" id="pt-confirm-btn" onclick="confirmAdd()">Add to Log</button>
       </div>
     </div>
   </div>
@@ -1326,6 +1352,7 @@ function renderToday(){
           <span class="log-chip">C ${r(e.carbs)}g</span>
           <span class="log-chip">F ${r(e.fat)}g</span>
           <span class="log-cal">${r(e.calories)}</span>
+          <button class="log-edit" onclick="editEntry('${m}',${i})" title="Edit">✎</button>
           <button class="log-del" onclick="delEntry('${m}',${i})">✕</button>
         </div>
       </div>`).join('');
@@ -1429,7 +1456,7 @@ function onSearch(){
     return;
   }
   if(sug)sug.style.display='none';
-  // Reset api section to just show the button (not results)
+  // Reset api results and restore button
   document.getElementById('sm-api-results').innerHTML='';
   const apiBtn=document.getElementById('sm-api-btn');
   apiBtn.textContent='🌐 Search Open Food Facts database';
@@ -1439,15 +1466,14 @@ function onSearch(){
   doUnified(q);
 }
 function tokenMatch(query, name){
-  // Normalize: lowercase, collapse spaces, strip punctuation
   const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
   const qn=norm(query), nn=norm(name);
-  // Direct substring hit first (fast path)
   if(nn.includes(qn))return true;
-  // Token-based: every query token must appear as a substring in some name token
-  const qTokens=qn.split(' ').filter(Boolean);
-  const nTokens=nn.split(' ').filter(Boolean);
-  return qTokens.every(qt=>nTokens.some(nt=>nt.includes(qt)||qt.includes(nt)));
+  const qTokens=qn.split(' ').filter(t=>t.length>=2);
+  if(!qTokens.length)return nn.includes(qn);
+  // Every query token must appear as a substring in at least one name token (not reverse)
+  const nTokens=nn.split(' ').filter(t=>t.length>=2);
+  return qTokens.every(qt=>nTokens.some(nt=>nt.includes(qt)));
 }
 function doUnified(q){
   const custHits=S.customFoods.filter(f=>tokenMatch(q,f.name));
@@ -1493,7 +1519,7 @@ async function doAPI(q){
       return{name:p.product_name,serving:us?(p.serving_size||'1 serving'):'100g',calories:r(us?n['energy-kcal_serving']:n['energy-kcal_100g']),protein:r(us?(n['proteins_serving']||0):(n['proteins_100g']||0)),carbs:r(us?(n['carbohydrates_serving']||0):(n['carbohydrates_100g']||0)),fat:r(us?(n['fat_serving']||0):(n['fat_100g']||0)),fiber:r(us?(n['fiber_serving']||0):(n['fiber_100g']||0))};
     });
     if(!foods.length){el.innerHTML='<div class="no-results"><p>No database results.</p></div>';return;}
-    el.innerHTML='<div class="results-section-lbl">Database Results</div><div class="results-list">'+foods.map(f=>`<div class="result-item" onclick='pickFood(${JSON.stringify(f)})'><div><div class="result-name">${f.name} <span class="badge off">OFF</span></div><div class="result-meta">${f.serving} · P ${f.protein}g · C ${f.carbs}g · F ${f.fat}g</div></div><div class="result-cal">${f.calories}</div></div>`).join('')+'</div>';
+    el.innerHTML='<div class="results-section-lbl" style="margin-top:8px;">Database Results</div><div class="results-list">'+foods.map(f=>`<div class="result-item" onclick='pickFood(${JSON.stringify(f)})'><div><div class="result-name">${f.name} <span class="badge off">OFF</span></div><div class="result-meta">${f.serving} · P ${f.protein}g · C ${f.carbs}g · F ${f.fat}g</div></div><div class="result-cal">${f.calories}</div></div>`).join('')+'</div>';
     document.getElementById('sm-api-btn').style.display='none';
   }catch(e){el.innerHTML='<div class="results-list"><div class="result-loading">Search failed — check your connection.</div></div>';}
 }
@@ -1506,30 +1532,104 @@ function renderRes(foods,src,q){
   const badge=src==='custom'?'<span class="badge">custom</span>':src==='api'?'<span class="badge off">OFF</span>':'';
   el.innerHTML='<div class="results-list">'+foods.map(f=>`<div class="result-item" onclick='pickFood(${JSON.stringify(f)})'><div><div class="result-name">${f.name} ${badge}</div><div class="result-meta">${f.serving} · P ${f.protein}g · C ${f.carbs}g · F ${f.fat}g</div></div><div class="result-cal">${f.calories}</div></div>`).join('')+'</div>';
 }
+let editMode=null; // {meal, index} when editing an existing entry, null when adding new
+
+function getSv(){
+  const sel=document.getElementById('pt-sv-sel');
+  if(sel.value==='custom')return parseFloat(document.getElementById('pt-sv-custom').value)||1;
+  return parseFloat(sel.value)||1;
+}
+function onSvSel(){
+  const sel=document.getElementById('pt-sv-sel');
+  const custom=document.getElementById('pt-sv-custom');
+  if(sel.value==='custom'){
+    custom.style.display='';
+    custom.focus();
+  } else {
+    custom.style.display='none';
+  }
+  updPrev();
+}
+function setSvSelector(val){
+  const sel=document.getElementById('pt-sv-sel');
+  const custom=document.getElementById('pt-sv-custom');
+  // Find closest option
+  const opts=[0.25,0.33,0.5,0.67,0.75,1,1.5,2,2.5,3,4,5];
+  const match=opts.find(o=>Math.abs(o-val)<0.01);
+  if(match!==undefined){
+    sel.value=String(match);
+    custom.style.display='none';
+  } else {
+    sel.value='custom';
+    custom.style.display='';
+    custom.value=val;
+  }
+}
 function pickFood(food){
   pendingFood=food;
+  editMode=null;
   document.getElementById('pt-name').textContent=food.name;
   document.getElementById('pt-meta').textContent=`per ${food.serving||'serving'} · ${food.calories} kcal`;
-  document.getElementById('pt-sv').value=1;
+  setSvSelector(1);
+  document.getElementById('pt-confirm-btn').textContent='Add to Log';
+  document.getElementById('pt-back-btn').onclick=backToSearch;
   updPrev();
   showPortion();
 }
 function updPrev(){
   if(!pendingFood)return;
-  const s=parseFloat(document.getElementById('pt-sv').value)||1;
+  const s=getSv();
   document.getElementById('pp-cal').textContent=r(pendingFood.calories*s);
   document.getElementById('pp-p').textContent=r(pendingFood.protein*s)+'g';
   document.getElementById('pp-c').textContent=r(pendingFood.carbs*s)+'g';
   document.getElementById('pp-f').textContent=r(pendingFood.fat*s)+'g';
 }
 function confirmAdd(){
-  if(!pendingFood||!activeMeal)return;
-  const s=parseFloat(document.getElementById('pt-sv').value)||1;
+  if(!pendingFood)return;
+  const s=getSv();
   const e={name:pendingFood.name,serving:pendingFood.serving||'serving',servings:s,calories:r(pendingFood.calories*s),protein:r(pendingFood.protein*s),carbs:r(pendingFood.carbs*s),fat:r(pendingFood.fat*s),fiber:r((pendingFood.fiber||0)*s)};
   if(!S.log[curDate])S.log[curDate]={};
-  if(!S.log[curDate][activeMeal])S.log[curDate][activeMeal]=[];
-  S.log[curDate][activeMeal].push(e);
+  if(editMode){
+    // Replace existing entry
+    if(!S.log[curDate][editMode.meal])S.log[curDate][editMode.meal]=[];
+    S.log[curDate][editMode.meal][editMode.index]=e;
+    editMode=null;
+  } else {
+    if(!activeMeal)return;
+    if(!S.log[curDate][activeMeal])S.log[curDate][activeMeal]=[];
+    S.log[curDate][activeMeal].push(e);
+  }
   save();closeSM();renderToday();toast(`Added ${e.name}`);
+}
+function editEntry(meal, idx){
+  const e=((S.log[curDate]||{})[meal]||[])[idx];
+  if(!e)return;
+  // Reconstruct a pendingFood-compatible object from the stored entry
+  const s=e.servings||1;
+  pendingFood={
+    name:e.name,
+    serving:e.serving,
+    calories:r(e.calories/s),
+    protein:r(e.protein/s),
+    carbs:r(e.carbs/s),
+    fat:r(e.fat/s),
+    fiber:r((e.fiber||0)/s)
+  };
+  editMode={meal,index:idx};
+  activeMeal=meal;
+  // Open the search modal in portion-step mode
+  const lbl={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snacks'};
+  document.getElementById('sm-lbl').textContent=lbl[meal];
+  document.getElementById('sm-api-section').style.display='none';
+  document.getElementById('sm-api-results').innerHTML='';
+  document.getElementById('search-modal').classList.add('open');
+  document.getElementById('pt-name').textContent=e.name;
+  document.getElementById('pt-meta').textContent=`per ${e.serving||'serving'} · ${pendingFood.calories} kcal`;
+  setSvSelector(s);
+  document.getElementById('pt-confirm-btn').textContent='Update Entry';
+  document.getElementById('pt-back-btn').onclick=closeSM;
+  updPrev();
+  showPortion();
 }
 
 // ── CREATE FOOD MODAL ──────────────────────────────────────────
