@@ -51,44 +51,65 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .view{display:none;}.view.active{display:block;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.ss{background:var(--surface-2);border:1px solid var(--border);border-radius:15px;padding:13px 10px;text-align:center;}
-.ss .sv{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:var(--text);line-height:1;}
-.ss .sl{font-size:11px;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.07em;margin-top:4px;font-weight:600;}
-.delta-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:15px;padding:13px 17px;margin-bottom:14px;}
-.delta-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.delta-lbl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-mid);}
-.delta-val{font-size:13px;font-weight:700;color:var(--text);}
-.delta-val.up{color:var(--accent-b);}.delta-val.dn{color:var(--accent-a);}
-.bar-track{height:9px;background:rgba(255,255,255,0.06);border-radius:99px;position:relative;overflow:hidden;}
+/* ── TODAY SUMMARY CARD ── */
+.today-card{background:var(--surface);border:1px solid var(--border-hi);border-radius:20px;padding:18px 20px 16px;margin-bottom:14px;box-shadow:var(--shadow);}
+.today-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.date-nav-group{display:flex;align-items:center;gap:8px;}
+.date-nav-group button{background:transparent;border:1px solid var(--border);border-radius:7px;width:26px;height:26px;font-size:14px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.date-nav-group button:hover{border-color:var(--accent-a);color:var(--accent-a);}
+.date-display{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);}
+.today-main{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;}
+.today-cal-block{flex-shrink:0;}
+.today-cal-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-3px;}
+.today-cal-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-top:3px;}
+.today-macro-chips{display:flex;flex-direction:column;justify-content:center;gap:6px;flex:1;padding-top:4px;}
+.today-macro-chip{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:8px;padding:5px 10px;}
+.tmc-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);}
+.tmc-val{font-size:14px;font-weight:700;color:var(--text);}
+/* ── CONTEXT MENU ── */
+.ctx-menu{position:fixed;z-index:500;background:var(--surface-2);border:1px solid var(--border-hi);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);overflow:hidden;min-width:140px;animation:ctxIn 0.15s var(--ease-spring) both;}
+@keyframes ctxIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
+.ctx-item{display:flex;align-items:center;gap:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;transition:background 0.1s;border:none;background:none;width:100%;text-align:left;}
+.ctx-item:hover{background:rgba(255,255,255,0.07);}
+.ctx-item:not(:last-child){border-bottom:1px solid var(--border);}
+.ctx-item.danger{color:#D07070;}
+.ctx-item.danger:hover{background:rgba(180,60,60,0.12);}
+.ctx-backdrop{position:fixed;inset:0;z-index:499;}
+/* Balance bar */
+.today-balance{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+.today-balance strong{color:var(--text);font-weight:700;}
+.today-balance.surplus strong{color:var(--accent-b);}
+.today-balance.deficit strong{color:var(--accent-a);}
+.today-balance.on-track strong{color:#5AAA80;}
+.bar-track{height:7px;background:rgba(255,255,255,0.06);border-radius:99px;position:relative;overflow:hidden;}
 .bar-fill{position:absolute;top:0;bottom:0;border-radius:99px;transition:all 0.5s ease;}
-.bar-ctr{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--text-light);left:50%;}
-.date-nav{display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:16px;}
-.date-nav button{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;font-size:15px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
-.date-nav button:hover{border-color:var(--accent-a);color:var(--accent-a);}
-.date-display{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);min-width:190px;text-align:center;}
-.meal-section{margin-bottom:12px;}
-.meal-header{display:flex;align-items:center;justify-content:space-between;padding:11px 17px;border-radius:15px 15px 0 0;border:1px solid rgba(255,255,255,0.1);border-bottom:none;}
+.bar-ctr{position:absolute;top:-1px;bottom:-1px;width:2px;background:rgba(255,255,255,0.15);left:50%;}
+/* ── MEAL SECTIONS ── */
+.meal-section{margin-bottom:10px;border-radius:15px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);}
+.meal-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;}
 .meal-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:white;display:flex;align-items:center;gap:8px;}
 .meal-cal{font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.12);border-radius:99px;padding:2px 9px;}
 .meal-add{background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:7px;color:white;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .meal-add:hover{background:rgba(255,255,255,0.28);}
-.meal-body{background:var(--surface);border:1px solid rgba(255,255,255,0.07);border-top:none;border-radius:0 0 15px 15px;overflow:hidden;}
+.meal-body{background:var(--surface);border-top:1px solid rgba(255,255,255,0.07);}
 [data-meal="breakfast"] .meal-header{background:linear-gradient(135deg,#C47A2E,#A86022);}
 [data-meal="lunch"] .meal-header{background:linear-gradient(135deg,#2E8A62,#1E6A4A);}
 [data-meal="dinner"] .meal-header{background:linear-gradient(135deg,#3A5E9A,#2A4070);}
 [data-meal="snacks"] .meal-header{background:linear-gradient(135deg,#7A4E9A,#5A3470);}
-.log-entry{display:flex;align-items:center;justify-content:space-between;padding:9px 15px;border-bottom:1px solid var(--border);gap:8px;}
-.log-entry:hover{background:rgba(255,255,255,0.03);}
+/* ── LOG ENTRIES ── */
+.log-entry{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);gap:12px;cursor:default;}
 .log-entry:last-child{border-bottom:none;}
-.log-name{font-size:13px;font-weight:600;color:var(--text);}
+.log-left{flex:1;min-width:0;}
+.log-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .log-portion{font-size:11px;color:var(--text-light);margin-top:1px;}
-.log-macros{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.log-macros{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;max-height:0;overflow:hidden;opacity:0;transition:max-height 0.2s ease,opacity 0.18s ease;}
+.log-entry.expanded .log-macros{max-height:40px;opacity:1;}
 .log-chip{font-size:10px;color:var(--text-mid);background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 6px;font-weight:600;}
-.log-cal{font-size:13px;font-weight:700;color:var(--accent-a);min-width:44px;text-align:right;}
-.log-del{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:12px;padding:4px;transition:color 0.15s;line-height:1;}
-.log-del:hover{color:#C07070;}
-.meal-empty{padding:14px;text-align:center;font-size:12px;color:var(--text-light);font-style:italic;}
+.log-right{display:flex;align-items:center;gap:0;flex-shrink:0;}
+.log-cal{font-size:15px;font-weight:700;color:var(--accent-a);text-align:right;}
+.log-del{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:12px;padding:4px;transition:color 0.15s;line-height:1;display:none;}
+.log-edit{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-light);padding:2px 4px;border-radius:5px;transition:color 0.15s;line-height:1;display:none;}
+.meal-empty{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-light);font-style:italic;border:1.5px dashed rgba(255,255,255,0.07);border-radius:10px;margin:10px 12px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
 .form-row.three{grid-template-columns:1fr 1fr 1fr;}.form-row.full{grid-template-columns:1fr;}
 .fg{display:flex;flex-direction:column;gap:4px;}
@@ -290,38 +311,54 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
       <button class="onboard-btn" onclick="switchView('profile', document.querySelectorAll('.nav-tab')[3])">Set Up →</button>
     </div>
-    <div class="date-nav">
-      <button onclick="changeDay(-1)">‹</button>
-      <div class="date-display" id="date-display"></div>
-      <button onclick="changeDay(1)">›</button>
-    </div>
-    <div class="summary-grid">
-      <div class="ss"><div class="sv" id="s-cal">—</div><div class="sl">Calories</div></div>
-      <div class="ss"><div class="sv" id="s-prot">—</div><div class="sl">Protein g</div></div>
-      <div class="ss"><div class="sv" id="s-carb">—</div><div class="sl">Carbs g</div></div>
-      <div class="ss"><div class="sv" id="s-fat">—</div><div class="sl">Fat g</div></div>
-    </div>
-    <div class="delta-wrap">
-      <div class="delta-row">
-        <span class="delta-lbl">vs. Maintenance</span>
-        <span class="delta-val" id="delta-val">—</span>
+
+    <!-- Unified summary card -->
+    <div class="today-card">
+      <div class="today-date-row">
+        <div class="date-nav-group">
+          <button onclick="changeDay(-1)">‹</button>
+          <div class="date-display" id="date-display"></div>
+          <button onclick="changeDay(1)">›</button>
+        </div>
       </div>
+      <div class="today-main">
+        <div class="today-cal-block">
+          <div class="today-cal-num" id="s-cal">0</div>
+          <div class="today-cal-lbl">Calories</div>
+        </div>
+        <div class="today-macro-chips">
+          <div class="today-macro-chip">
+            <span class="tmc-lbl">Protein</span>
+            <span class="tmc-val" id="s-prot">—</span>
+          </div>
+          <div class="today-macro-chip">
+            <span class="tmc-lbl">Carbs</span>
+            <span class="tmc-val" id="s-carb">—</span>
+          </div>
+          <div class="today-macro-chip">
+            <span class="tmc-lbl">Fat</span>
+            <span class="tmc-val" id="s-fat">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="today-balance" id="today-balance"></div>
       <div class="bar-track"><div class="bar-fill" id="bar-fill"></div><div class="bar-ctr"></div></div>
     </div>
+
     <div class="meal-section" data-meal="breakfast">
-      <div class="meal-header"><div class="meal-title">Breakfast <span class="meal-cal" id="mcal-breakfast">0 kcal</span></div><button class="meal-add" onclick="openSearch('breakfast')">+ Add</button></div>
+      <div class="meal-header"><div class="meal-title">Breakfast <span class="meal-cal" id="mcal-breakfast">0 cal</span></div><button class="meal-add" onclick="openSearch('breakfast')">+ Add</button></div>
       <div class="meal-body" id="mlog-breakfast"></div>
     </div>
     <div class="meal-section" data-meal="lunch">
-      <div class="meal-header"><div class="meal-title">Lunch <span class="meal-cal" id="mcal-lunch">0 kcal</span></div><button class="meal-add" onclick="openSearch('lunch')">+ Add</button></div>
+      <div class="meal-header"><div class="meal-title">Lunch <span class="meal-cal" id="mcal-lunch">0 cal</span></div><button class="meal-add" onclick="openSearch('lunch')">+ Add</button></div>
       <div class="meal-body" id="mlog-lunch"></div>
     </div>
     <div class="meal-section" data-meal="dinner">
-      <div class="meal-header"><div class="meal-title">Dinner <span class="meal-cal" id="mcal-dinner">0 kcal</span></div><button class="meal-add" onclick="openSearch('dinner')">+ Add</button></div>
+      <div class="meal-header"><div class="meal-title">Dinner <span class="meal-cal" id="mcal-dinner">0 cal</span></div><button class="meal-add" onclick="openSearch('dinner')">+ Add</button></div>
       <div class="meal-body" id="mlog-dinner"></div>
     </div>
     <div class="meal-section" data-meal="snacks">
-      <div class="meal-header"><div class="meal-title">Snacks <span class="meal-cal" id="mcal-snacks">0 kcal</span></div><button class="meal-add" onclick="openSearch('snacks')">+ Add</button></div>
+      <div class="meal-header"><div class="meal-title">Snacks <span class="meal-cal" id="mcal-snacks">0 cal</span></div><button class="meal-add" onclick="openSearch('snacks')">+ Add</button></div>
       <div class="meal-body" id="mlog-snacks"></div>
     </div>
   </div>
@@ -341,7 +378,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <span class="hero-chip-lbl">7-Day Avg</span>
             <div class="hero-chip-right">
               <div class="hero-chip-val" id="r7c">—</div>
-              <div class="hero-chip-sub">kcal/day</div>
+              <div class="hero-chip-sub">cal/day</div>
             </div>
           </div>
           <div class="hero-chip">
@@ -449,7 +486,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           <div style="text-align:right;flex-shrink:0;">
             <div class="profile-summary-tdee" id="profile-summary-tdee">—</div>
-            <div class="profile-summary-sub" id="profile-summary-sub">kcal/day</div>
+            <div class="profile-summary-sub" id="profile-summary-sub">cal/day</div>
           </div>
         </div>
       </div>
@@ -578,7 +615,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       <div class="mprev">
-        <div class="mpi"><div class="mv" id="pp-cal">—</div><div class="ml">kcal</div></div>
+        <div class="mpi"><div class="mv" id="pp-cal">—</div><div class="ml">cal</div></div>
         <div class="mpi"><div class="mv" id="pp-p">—</div><div class="ml">protein</div></div>
         <div class="mpi"><div class="mv" id="pp-c">—</div><div class="ml">carbs</div></div>
         <div class="mpi"><div class="mv" id="pp-f">—</div><div class="ml">fat</div></div>
@@ -1817,7 +1854,6 @@ function switchView(v,btn){
 function changeDay(d){curDate=offsetKey(curDate,d);renderToday();}
 function renderToday(){
   document.getElementById('date-display').textContent=fmtDate(curDate);
-  // Onboarding banner
   const banner=document.getElementById('onboard-banner');
   if(banner)banner.style.display=S.profile?'none':'flex';
   const meals=['breakfast','lunch','dinner','snacks'];
@@ -1826,36 +1862,54 @@ function renderToday(){
     const en=((S.log[curDate]||{})[m])||[];
     let mC=0;
     en.forEach(e=>{mC+=e.calories;tC+=e.calories;tP+=e.protein;tCb+=e.carbs;tF+=e.fat;});
-    document.getElementById('mcal-'+m).textContent=r(mC)+' kcal';
+    document.getElementById('mcal-'+m).textContent=r(mC)+' cal';
     const body=document.getElementById('mlog-'+m);
-    if(!en.length){body.innerHTML='<div class="meal-empty">Nothing yet</div>';return;}
+    if(!en.length){body.innerHTML='<div class="meal-empty">Nothing logged yet</div>';return;}
     body.innerHTML=en.map((e,i)=>`
-      <div class="log-entry">
-        <div><div class="log-name">${e.name}</div><div class="log-portion">${e.servings}× ${e.serving||'serving'}</div></div>
-        <div class="log-macros">
-          <span class="log-chip">P ${r(e.protein)}g</span>
-          <span class="log-chip">C ${r(e.carbs)}g</span>
-          <span class="log-chip">F ${r(e.fat)}g</span>
+      <div class="log-entry" data-meal="${m}" data-idx="${i}" onclick="this.classList.toggle('expanded')">
+        <div class="log-left">
+          <div class="log-name">${e.name}</div>
+          <div class="log-portion">${e.servings}× ${e.serving||'serving'}</div>
+          <div class="log-macros">
+            <span class="log-chip">P ${r(e.protein)}g</span>
+            <span class="log-chip">C ${r(e.carbs)}g</span>
+            <span class="log-chip">F ${r(e.fat)}g</span>
+          </div>
+        </div>
+        <div class="log-right">
           <span class="log-cal">${r(e.calories)}</span>
-          <button class="log-edit" onclick="editEntry('${m}',${i})" title="Edit">✎</button>
-          <button class="log-del" onclick="delEntry('${m}',${i})">✕</button>
         </div>
       </div>`).join('');
   });
   document.getElementById('s-cal').textContent=r(tC);
-  document.getElementById('s-prot').textContent=r(tP);
-  document.getElementById('s-carb').textContent=r(tCb);
-  document.getElementById('s-fat').textContent=r(tF);
+  document.getElementById('s-prot').textContent=r(tP)+'g';
+  document.getElementById('s-carb').textContent=r(tCb)+'g';
+  document.getElementById('s-fat').textContent=r(tF)+'g';
   const tdee=getEffectiveTDEE();
-  const dv=document.getElementById('delta-val');
+  const bal=document.getElementById('today-balance');
   const bf=document.getElementById('bar-fill');
   if(tdee){
     const delta=tC-tdee;
+    const remaining=tdee-tC;
     const pct=Math.min(Math.abs(delta)/tdee,0.5);
-    if(delta>0){bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='var(--accent-b)';dv.textContent=`+${r(delta)} kcal surplus`;dv.className='delta-val up';}
-    else if(delta<0){const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='var(--accent-a)';dv.textContent=`${r(delta)} kcal deficit`;dv.className='delta-val dn';}
-    else{bf.style.width='0';dv.textContent='Right at maintenance';dv.className='delta-val';}
-  }else{bf.style.width='0';dv.textContent='Profile not set';dv.className='delta-val';}
+    if(delta>50){
+      bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='var(--accent-b)';
+      bal.innerHTML=`<strong>+${r(delta)} cal</strong> over maintenance`;
+      bal.className='today-balance surplus';
+    } else if(delta<-50){
+      const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='var(--accent-a)';
+      bal.innerHTML=`<strong>${r(remaining)} cal</strong> remaining`;
+      bal.className='today-balance deficit';
+    } else {
+      bf.style.width='2px';bf.style.left='50%';bf.style.background='#5AAA80';
+      bal.innerHTML=`<strong>Right at maintenance</strong>`;
+      bal.className='today-balance on-track';
+    }
+  } else {
+    bf.style.width='0';
+    bal.innerHTML='Set up your profile to track vs. goal';
+    bal.className='today-balance';
+  }
 }
 function delEntry(m,i){S.log[curDate][m].splice(i,1);save();renderToday();}
 
@@ -1863,7 +1917,7 @@ function delEntry(m,i){S.log[curDate][m].splice(i,1);save();renderToday();}
 function openSearch(meal){
   activeMeal=meal;
   editMode=null;
-  const lbl={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snacks'};
+  const lbl={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snacks:'Snacks'};
   document.getElementById('sm-lbl').textContent=lbl[meal];
   document.getElementById('sm-q').value='';
   // Reset scroll area — preserve sm-api-results div since it's now inside sm-results
@@ -2058,7 +2112,7 @@ function pickFood(food){
   pendingFood=food;
   editMode=null;
   document.getElementById('pt-name').textContent=food.name;
-  document.getElementById('pt-meta').textContent=`per ${food.serving||'serving'} · ${food.calories} kcal`;
+  document.getElementById('pt-meta').textContent=`per ${food.serving||'serving'} · ${food.calories} cal`;
   setSvSelector(1);
   document.getElementById('pt-confirm-btn').textContent='Add to Log';
   document.getElementById('pt-back-btn').onclick=backToSearch;
@@ -2115,13 +2169,13 @@ function editEntry(meal, idx){
   editMode={meal,index:idx};
   activeMeal=meal;
   // Open the search modal in portion-step mode
-  const lbl={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snacks'};
+  const lbl={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snacks:'Snacks'};
   document.getElementById('sm-lbl').textContent=lbl[meal];
   document.getElementById('sm-api-section').style.display='none';
   document.getElementById('sm-api-results').innerHTML='';
   document.getElementById('search-modal').classList.add('open');
   document.getElementById('pt-name').textContent=e.name;
-  document.getElementById('pt-meta').textContent=`per ${e.serving||'serving'} · ${pendingFood.calories} kcal`;
+  document.getElementById('pt-meta').textContent=`per ${e.serving||'serving'} · ${pendingFood.calories} cal`;
   setSvSelector(s);
   document.getElementById('pt-confirm-btn').textContent='Update Entry';
   document.getElementById('pt-back-btn').onclick=closeSM;
@@ -2167,7 +2221,7 @@ function renderCF(){
   document.getElementById('cf-count').textContent=S.customFoods.length;
   const el=document.getElementById('cf-list');
   if(!S.customFoods.length){el.innerHTML='<div class="empty-msg">No custom foods yet.</div>';return;}
-  el.innerHTML=S.customFoods.map(f=>`<div class="cf-row"><div><div class="cf-name">${f.name}</div><div class="cf-meta">${f.serving} · ${f.calories} kcal · P ${f.protein}g · C ${f.carbs}g · F ${f.fat}g</div></div><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary" onclick='quickLog(${JSON.stringify(f)})'>+ Log</button><button class="btn btn-sm btn-secondary" onclick="delCF(${f.id})">✕</button></div></div>`).join('');
+  el.innerHTML=S.customFoods.map(f=>`<div class="cf-row"><div><div class="cf-name">${f.name}</div><div class="cf-meta">${f.serving} · ${f.calories} cal · P ${f.protein}g · C ${f.carbs}g · F ${f.fat}g</div></div><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary" onclick='quickLog(${JSON.stringify(f)})'>+ Log</button><button class="btn btn-sm btn-secondary" onclick="delCF(${f.id})">✕</button></div></div>`).join('');
 }
 function quickLog(food){
   const meal=prompt('Add to which meal?\nbreakfast / lunch / dinner / snacks','lunch');
@@ -2218,7 +2272,7 @@ function liveCalc(){
   const p={age,sex,weight,height,bodyFat:bf,activity};
   const tdee=calcTDEE(p);
   const formula=bf>0?'Katch-McArdle':'Mifflin-St Jeor';
-  document.getElementById('p-tdee').textContent=tdee+' kcal';
+  document.getElementById('p-tdee').textContent=tdee+' cal';
   document.getElementById('p-formula-lbl').textContent='calories/day · '+formula+(bf>0?' (using body fat %)':'');
   document.getElementById('profile-result').classList.add('visible');
   // Activity preview table
@@ -2232,7 +2286,7 @@ function liveCalc(){
   document.getElementById('p-activity-preview').innerHTML=levels.map(l=>{
     const est=calcTDEEForActivity(p,l.v);
     const isActive=l.v===activity;
-    return `<div class="pap-row${isActive?' active':''}"><span class="pap-lbl">${l.lbl}</span><span class="pap-val${isActive?' active':''}">${est} kcal</span></div>`;
+    return `<div class="pap-row${isActive?' active':''}"><span class="pap-lbl">${l.lbl}</span><span class="pap-val${isActive?' active':''}">${est} cal</span></div>`;
   }).join('');
 }
 function saveGoals(){
@@ -2324,7 +2378,7 @@ function renderTrends(){
   const allK=Object.keys(S.log).filter(k=>Object.values(S.log[k]).some(m=>m.length)).sort();
   const l7=allK.slice(-7),l30=allK.slice(-30);
   document.getElementById('days-n').textContent=allK.length;
-  function setR(did,sid,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className='hero-number '+(d>50?'ab':d<-50?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} kcal/day`;}
+  function setR(did,sid,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className='hero-number '+(d>50?'ab':d<-50?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} cal/day`;}
   setR('r7d','r7s',l7);setR('r30d','r30s',l30);
   if(l7.length){const el=document.getElementById('r7c');el.textContent=r(avg(l7.map(k=>sumDay(k).cal)));el.className='hero-chip-val';}
 
@@ -2344,7 +2398,7 @@ function renderTrends(){
   const balColors=dltD.map(v=>Math.abs(v)<=50?'rgba(80,170,120,0.75)':v>0?'rgba(232,168,48,0.75)':'rgba(74,111,168,0.75)');
   const balBorders=dltD.map(v=>Math.abs(v)<=50?'rgba(80,170,120,1)':v>0?'rgba(232,168,48,1)':'rgba(74,111,168,1)');
   if(charts.d)charts.d.destroy();
-  charts.d=new Chart(document.getElementById('chart-delta').getContext('2d'),{type:'bar',data:{labels:balLbls,datasets:[{data:dltD,backgroundColor:balColors,borderColor:balBorders,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.raw>0?'+':'')+ctx.raw+' kcal'+(useWeekly?' (wk avg)':'')}}}}});
+  charts.d=new Chart(document.getElementById('chart-delta').getContext('2d'),{type:'bar',data:{labels:balLbls,datasets:[{data:dltD,backgroundColor:balColors,borderColor:balBorders,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.raw>0?'+':'')+ctx.raw+' cal'+(useWeekly?' (wk avg)':'')}}}}});
 
   // ── 2×2 Macro sparklines ──
   const goals=(S.profile&&S.profile.goals)||{};
@@ -2442,7 +2496,7 @@ function showProfileSummary(){
   document.getElementById('profile-summary-text').innerHTML=
     `<strong>${p.age} yrs · ${p.sex==='male'?'Male':'Female'} · ${p.weight} lbs · ${ftIn}′${inches}″</strong><br>${actLbl}${p.bodyFat?` · ${p.bodyFat}% body fat`:''}`;
   document.getElementById('profile-summary-tdee').textContent=tdee?tdee:'—';
-  document.getElementById('profile-summary-sub').textContent=tdee?'kcal/day maintenance':'Set profile';
+  document.getElementById('profile-summary-sub').textContent=tdee?'cal/day maintenance':'Set profile';
   document.getElementById('profile-summary-view').style.display='block';
   document.getElementById('profile-form-wrap').classList.remove('open');
   document.getElementById('profile-edit-btn').style.display='inline-flex';
@@ -2471,6 +2525,40 @@ function toggleActivityPreview(){
   btn.classList.toggle('open');
 }
 
+// ── CONTEXT MENU (long-press / right-click on log entries) ────
+let ctxPressTimer=null;
+const CTX_DURATION=500;
+
+function showCtxMenu(e,meal,idx){
+  e.preventDefault();
+  closeCtxMenu();
+  const x=e.touches?e.touches[0].clientX:e.clientX;
+  const y=e.touches?e.touches[0].clientY:e.clientY;
+  const bd=document.createElement('div');
+  bd.className='ctx-backdrop';
+  bd.addEventListener('click',closeCtxMenu);
+  bd.addEventListener('touchstart',closeCtxMenu,{passive:true});
+  const menu=document.createElement('div');
+  menu.className='ctx-menu';
+  menu.id='ctx-menu';
+  menu.innerHTML=`<button class="ctx-item" id="ctx-edit">Edit</button><button class="ctx-item danger" id="ctx-delete">Delete</button>`;
+  document.body.appendChild(bd);
+  document.body.appendChild(menu);
+  const mw=148,mh=96;
+  let left=x+10,top=y-mh/2;
+  if(left+mw>window.innerWidth-8)left=x-mw-10;
+  if(top<8)top=8;
+  if(top+mh>window.innerHeight-8)top=window.innerHeight-mh-8;
+  menu.style.left=left+'px';
+  menu.style.top=top+'px';
+  document.getElementById('ctx-edit').onclick=()=>{closeCtxMenu();editEntry(meal,idx);};
+  document.getElementById('ctx-delete').onclick=()=>{closeCtxMenu();delEntry(meal,idx);};
+}
+function closeCtxMenu(){
+  const m=document.getElementById('ctx-menu');
+  const b=document.querySelector('.ctx-backdrop');
+  if(m)m.remove();if(b)b.remove();
+}
 
 document.getElementById('sm-results').addEventListener('click',function(e){
   const item=e.target.closest('.result-item');
@@ -2486,6 +2574,34 @@ document.getElementById('weight-modal').addEventListener('click',function(e){if(
 // ── STICKY HEADER HEIGHT ───────────────────────────────────────
 function fixStickyPad(){const h=document.getElementById('sticky-shell').offsetHeight;document.querySelector('.wrap').style.paddingTop=(h+16)+'px';}
 window.addEventListener('resize',fixStickyPad);
+
+// ── LOG ENTRY LONG-PRESS / RIGHT-CLICK ────────────────────────
+document.getElementById('view-today').addEventListener('contextmenu',function(e){
+  const entry=e.target.closest('.log-entry');
+  if(!entry)return;
+  showCtxMenu(e,entry.dataset.meal,parseInt(entry.dataset.idx));
+});
+document.getElementById('view-today').addEventListener('touchstart',function(e){
+  const entry=e.target.closest('.log-entry');
+  if(!entry)return;
+  ctxPressTimer=setTimeout(()=>{
+    // Prevent the tap-expand from also firing
+    entry._suppressClick=true;
+    showCtxMenu(e,entry.dataset.meal,parseInt(entry.dataset.idx));
+    setTimeout(()=>{entry._suppressClick=false;},300);
+  },CTX_DURATION);
+},{passive:true});
+document.getElementById('view-today').addEventListener('touchend',function(){
+  clearTimeout(ctxPressTimer);
+},{passive:true});
+document.getElementById('view-today').addEventListener('touchmove',function(){
+  clearTimeout(ctxPressTimer);
+},{passive:true});
+// Suppress expand on long-press release
+document.getElementById('view-today').addEventListener('click',function(e){
+  const entry=e.target.closest('.log-entry');
+  if(entry&&entry._suppressClick){e.stopImmediatePropagation();}
+},true);
 
 // ── INIT ───────────────────────────────────────────────────────
 load();renderToday();
