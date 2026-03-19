@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Eat, Drink, Be Glad!</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   /* ── Deep Navy + Amber/Gold palette ── */
@@ -60,7 +60,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .date-display{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);}
 .today-main{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;}
 .today-cal-block{flex-shrink:0;}
-.today-cal-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-3px;}
+.today-cal-num{font-family:'Space Grotesk',sans-serif;font-size:72px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-1px;}
 .today-cal-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-top:3px;}
 .today-macro-chips{display:flex;flex-direction:column;justify-content:center;gap:6px;flex:1;padding-top:4px;}
 .today-macro-chip{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:8px;padding:5px 10px;}
@@ -78,8 +78,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* Balance bar */
 .today-balance{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
 .today-balance strong{color:var(--text);font-weight:700;}
-.today-balance.surplus strong{color:var(--accent-b);}
-.today-balance.deficit strong{color:var(--accent-a);}
+.today-balance.surplus strong{color:var(--accent-a);}
+.today-balance.deficit strong{color:rgba(74,111,168,1);}
 .today-balance.on-track strong{color:#5AAA80;}
 .bar-track{height:7px;background:rgba(255,255,255,0.06);border-radius:99px;position:relative;overflow:hidden;}
 .bar-fill{position:absolute;top:0;bottom:0;border-radius:99px;transition:all 0.5s ease;}
@@ -164,25 +164,36 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(232,168,48,0.15);color:var(--accent-a);letter-spacing:0.04em;}
 .badge.off{background:rgba(74,170,120,0.14);color:#4AAA70;}
 
-/* ── TRENDS — Compact Hero layout ── */
+/* ── TRENDS — 1:2:1 Stack Hero layout ── */
 .trends-hero{background:var(--surface);border:1px solid var(--border-hi);border-radius:20px;padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
 .trends-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(232,168,48,0.10) 0%,transparent 70%);pointer-events:none;}
-.hero-layout{display:flex;align-items:center;gap:16px;}
-.hero-primary{flex-shrink:0;}
-.hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent-a);margin-bottom:2px;}
-.hero-number{font-family:'Playfair Display',serif;font-size:48px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-2px;}
+/* Row 1: 7-day balance — full width highlight */
+.hero-top-row{background:var(--surface-2);border:1px solid var(--border-hi);border-radius:14px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:baseline;justify-content:space-between;}
+.hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent-a);}
+.hero-top-right{text-align:right;}
+.hero-number{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;line-height:1;color:var(--text);letter-spacing:-1px;}
 .hero-number.aa{color:var(--accent-a);}.hero-number.ab{color:var(--accent-b);}
-.hero-sub{font-size:12px;color:var(--text-mid);margin-top:4px;}
-.hero-chips{display:flex;flex-direction:column;gap:6px;flex:1;}
-.hero-chip{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
-.hero-chip-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);white-space:nowrap;}
-.hero-chip-right{text-align:right;}
-.hero-chip-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);line-height:1;}
+.hero-sub{font-size:12px;color:var(--text-mid);margin-top:3px;}
+/* Row 2: two chips side by side */
+.hero-mid-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.hero-chip{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+.hero-chip-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);margin-bottom:4px;}
+.hero-chip-val{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-0.5px;}
+.hero-bottom-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text);line-height:1;}
 .hero-chip-val.aa{color:var(--accent-a);}.hero-chip-val.ab{color:var(--accent-b);}
-.hero-chip-sub{font-size:10px;color:var(--text-light);margin-top:1px;}
-@media(max-width:400px){.hero-number{font-size:40px;}.hero-chip-val{font-size:16px;}}
+.hero-chip-sub{font-size:10px;color:var(--text-light);margin-top:2px;}
+/* Row 3: days logged — full width */
+.hero-bottom-sub{font-size:10px;color:var(--text-light);margin-left:4px;}
+.hero-bottom-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);}
+.hero-bottom-sub{font-size:10px;color:var(--text-light);margin-left:4px;}
+@media(max-width:400px){.hero-number{font-size:42px;}.hero-chip-val{font-size:19px;}}
 
 .rolling-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.fiber-toggle-row{display:flex;align-items:center;justify-content:flex-end;margin-top:10px;}
+.fiber-toggle-btn{background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text-light);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;}
+.fiber-toggle-btn:hover{border-color:var(--accent-a);color:var(--accent-a);}
+.fiber-cell{display:none;}
+.fiber-cell.visible{display:block;}
 .rc{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:14px;}
 .rc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-mid);margin-bottom:5px;}
 .rc-val{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;color:var(--text);}
@@ -280,9 +291,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .mprev{grid-template-columns:1fr 1fr;}
   .sparkline-grid{grid-template-columns:1fr;}
   .fg input,.fg select{font-size:16px;}
-  .hero-number{font-size:44px;}
-  .hero-chips{gap:6px;}
-  .hero-chip{min-width:100px;}
+  .hero-number{font-size:46px;}
 }
 </style>
 </head>
@@ -367,34 +376,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="view" id="view-trends">
     <!-- Hero: compact two-column layout -->
     <div class="trends-hero">
-      <div class="hero-layout">
-        <div class="hero-primary">
-          <div class="hero-eyebrow">7-Day Balance</div>
+      <!-- Row 1: 7-Day Balance — full width highlight -->
+      <div class="hero-top-row">
+        <div class="hero-eyebrow">7-Day Balance</div>
+        <div class="hero-top-right">
           <div class="hero-number" id="r7d">—</div>
           <div class="hero-sub" id="r7s">Need more data</div>
         </div>
-        <div class="hero-chips">
-          <div class="hero-chip">
-            <span class="hero-chip-lbl">7-Day Avg</span>
-            <div class="hero-chip-right">
-              <div class="hero-chip-val" id="r7c">—</div>
-              <div class="hero-chip-sub">cal/day</div>
-            </div>
-          </div>
-          <div class="hero-chip">
-            <span class="hero-chip-lbl">30-Day</span>
-            <div class="hero-chip-right">
-              <div class="hero-chip-val" id="r30d">—</div>
-              <div class="hero-chip-sub" id="r30s">balance</div>
-            </div>
-          </div>
-          <div class="hero-chip">
-            <span class="hero-chip-lbl">Logged</span>
-            <div class="hero-chip-right">
-              <div class="hero-chip-val" id="days-n">0</div>
-              <div class="hero-chip-sub">days</div>
-            </div>
-          </div>
+      </div>
+      <!-- Row 2: 30-Day Balance + Days Logged side by side -->
+      <div class="hero-mid-row">
+        <div class="hero-chip">
+          <div class="hero-chip-lbl">30-Day Balance</div>
+          <div class="hero-chip-val" id="r30d">—</div>
+          <div class="hero-chip-sub" id="r30s">cal</div>
+        </div>
+        <div class="hero-chip">
+          <div class="hero-chip-lbl">Days Logged</div>
+          <div class="hero-chip-val" id="days-n">0</div>
+          <div class="hero-chip-sub">days</div>
         </div>
       </div>
     </div>
@@ -408,7 +408,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <option value="90">Last 3 months</option>
         </select>
       </div>
-      <div style="font-size:12px;color:var(--text-mid);margin:8px 0;">Amber = surplus · Blue = deficit · <span style="color:#5AAA80;">Green = maintenance</span></div>
+      <div style="font-size:12px;color:var(--text-mid);margin:8px 0;"><span style="color:rgba(232,168,48,1);">Amber = surplus</span> · <span style="color:rgba(74,111,168,1);">Blue = deficit</span> · <span style="color:#5AAA80;">Green = maintenance</span></div>
       <div class="chart-wrap"><canvas id="chart-delta"></canvas></div>
     </div>
     <div class="card">
@@ -430,11 +430,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <div class="spark-avg" id="sp-avg-fat">—</div>
           <div class="spark-wrap"><canvas id="chart-fat"></canvas></div>
         </div>
-        <div class="spark-cell">
+        <div class="spark-cell fiber-cell" id="fiber-cell">
           <div class="spark-lbl"><span class="macro-dot dot-fiber"></span>Fiber</div>
           <div class="spark-avg" id="sp-avg-fiber">—</div>
           <div class="spark-wrap"><canvas id="chart-fiber"></canvas></div>
         </div>
+      </div>
+      <div class="fiber-toggle-row">
+        <button class="fiber-toggle-btn" id="fiber-toggle-btn" onclick="toggleFiber()">Show Fiber</button>
       </div>
     </div>
     <div class="card"><div class="card-title">Weight Over Time</div>
@@ -1892,17 +1895,21 @@ function renderToday(){
     const delta=tC-tdee;
     const remaining=tdee-tC;
     const pct=Math.min(Math.abs(delta)/tdee,0.5);
-    if(delta>50){
-      bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='var(--accent-b)';
+    if(delta>100){
+      bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='var(--accent-a)';
       bal.innerHTML=`<strong>+${r(delta)} cal</strong> over maintenance`;
       bal.className='today-balance surplus';
-    } else if(delta<-50){
-      const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='var(--accent-a)';
-      bal.innerHTML=`<strong>${r(remaining)} cal</strong> remaining`;
+    } else if(delta<-100){
+      const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='rgba(74,111,168,1)';
+      bal.innerHTML=`<strong>${r(Math.abs(delta))} cal</strong> under maintenance`;
       bal.className='today-balance deficit';
+    } else if(delta>0){
+      bf.style.left='50%';bf.style.width=(pct*100)+'%';bf.style.background='#5AAA80';
+      bal.innerHTML=`<strong>+${r(delta)} cal</strong> over maintenance`;
+      bal.className='today-balance on-track';
     } else {
-      bf.style.width='2px';bf.style.left='50%';bf.style.background='#5AAA80';
-      bal.innerHTML=`<strong>Right at maintenance</strong>`;
+      const w=pct*100;bf.style.left=(50-w)+'%';bf.style.width=w+'%';bf.style.background='#5AAA80';
+      bal.innerHTML=delta===0?`<strong>Right at maintenance</strong>`:`<strong>${r(Math.abs(delta))} cal</strong> under maintenance`;
       bal.className='today-balance on-track';
     }
   } else {
@@ -2378,9 +2385,9 @@ function renderTrends(){
   const allK=Object.keys(S.log).filter(k=>Object.values(S.log[k]).some(m=>m.length)).sort();
   const l7=allK.slice(-7),l30=allK.slice(-30);
   document.getElementById('days-n').textContent=allK.length;
-  function setR(did,sid,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className='hero-number '+(d>50?'ab':d<-50?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} cal/day`;}
-  setR('r7d','r7s',l7);setR('r30d','r30s',l30);
-  if(l7.length){const el=document.getElementById('r7c');el.textContent=r(avg(l7.map(k=>sumDay(k).cal)));el.className='hero-chip-val';}
+  function setR(did,sid,cls,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className=cls+' '+(d>100?'ab':d<-100?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} cal/day`;}
+  setR('r7d','r7s','hero-number',l7);setR('r30d','r30s','hero-chip-val',l30);
+  // r7c chip removed — avg shown as sub-label under 7-day balance via r7s
 
   const rangeN=parseInt(document.getElementById('chart-range').value);
   const rangeDays=allK.slice(-rangeN);
@@ -2395,8 +2402,8 @@ function renderTrends(){
   // ── Calorie Balance chart ──
   const {labels:balLbls, data:balRaw} = buildSeries(rangeDays, s=>s.cal);
   const dltD = tdee ? balRaw.map(v=>r(v-tdee)) : balRaw;
-  const balColors=dltD.map(v=>Math.abs(v)<=50?'rgba(80,170,120,0.75)':v>0?'rgba(232,168,48,0.75)':'rgba(74,111,168,0.75)');
-  const balBorders=dltD.map(v=>Math.abs(v)<=50?'rgba(80,170,120,1)':v>0?'rgba(232,168,48,1)':'rgba(74,111,168,1)');
+  const balColors=dltD.map(v=>Math.abs(v)<=100?'rgba(80,170,120,0.75)':v>0?'rgba(232,168,48,0.75)':'rgba(74,111,168,0.75)');
+  const balBorders=dltD.map(v=>Math.abs(v)<=100?'rgba(80,170,120,1)':v>0?'rgba(232,168,48,1)':'rgba(74,111,168,1)');
   if(charts.d)charts.d.destroy();
   charts.d=new Chart(document.getElementById('chart-delta').getContext('2d'),{type:'bar',data:{labels:balLbls,datasets:[{data:dltD,backgroundColor:balColors,borderColor:balBorders,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.raw>0?'+':'')+ctx.raw+' cal'+(useWeekly?' (wk avg)':'')}}}}});
 
@@ -2454,6 +2461,14 @@ function importData(evt){
   rdr.readAsText(file);evt.target.value='';
 }
 function clearLog(){if(!confirm('Clear all food log data?'))return;S.log={};save();renderToday();toast('Log cleared.');}
+
+function toggleFiber(){
+  const cell=document.getElementById('fiber-cell');
+  const btn=document.getElementById('fiber-toggle-btn');
+  const showing=cell.classList.toggle('visible');
+  btn.textContent=showing?'Hide Fiber':'Show Fiber';
+  if(showing&&charts['chart-fiber']){charts['chart-fiber'].resize();}
+}
 
 function toggleGoalsEdit(){
   const wrap=document.getElementById('goals-form-wrap');
