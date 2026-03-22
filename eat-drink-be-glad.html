@@ -55,9 +55,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .today-card{background:var(--surface);border:1px solid var(--border-hi);border-radius:20px;padding:18px 20px 16px;margin-bottom:14px;box-shadow:var(--shadow);}
 .today-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .date-nav-group{display:flex;align-items:center;gap:8px;}
-.date-nav-group button{background:transparent;border:1px solid var(--border);border-radius:7px;width:26px;height:26px;font-size:14px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.date-nav-group button{background:transparent;border:1px solid var(--border);border-radius:8px;width:34px;height:34px;font-size:18px;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
 .date-nav-group button:hover{border-color:var(--accent-a);color:var(--accent-a);}
-.date-display{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);}
+.date-display{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
+.today-jump-btn{display:none;background:transparent!important;border:1.5px solid var(--accent-a)!important;border-radius:8px;width:auto!important;height:auto!important;padding:7px 13px!important;font-family:'DM Sans',sans-serif;font-size:12px!important;font-weight:700;color:var(--accent-a)!important;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-left:6px;}
+.today-jump-btn:hover{background:rgba(232,168,48,0.12)!important;}
 .today-main{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;}
 .today-cal-block{flex-shrink:0;}
 .today-cal-num{font-family:'Space Grotesk',sans-serif;font-size:72px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-1px;}
@@ -328,6 +330,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button onclick="changeDay(-1)">‹</button>
           <div class="date-display" id="date-display"></div>
           <button onclick="changeDay(1)">›</button>
+          <button class="today-jump-btn" id="today-jump-btn" onclick="goToToday()">Today</button>
         </div>
       </div>
       <div class="today-main">
@@ -1855,8 +1858,11 @@ function switchView(v,btn){
 
 // ── TODAY ──────────────────────────────────────────────────────
 function changeDay(d){curDate=offsetKey(curDate,d);renderToday();}
+function goToToday(){curDate=todayKey();renderToday();}
 function renderToday(){
   document.getElementById('date-display').textContent=fmtDate(curDate);
+  const tjb=document.getElementById('today-jump-btn');
+  if(tjb)tjb.style.display=(curDate!==todayKey()?'flex':'none');
   const banner=document.getElementById('onboard-banner');
   if(banner)banner.style.display=S.profile?'none':'flex';
   const meals=['breakfast','lunch','dinner','snacks'];
@@ -2385,7 +2391,7 @@ function renderTrends(){
   const allK=Object.keys(S.log).filter(k=>Object.values(S.log[k]).some(m=>m.length)).sort();
   const l7=allK.slice(-7),l30=allK.slice(-30);
   document.getElementById('days-n').textContent=allK.length;
-  function setR(did,sid,cls,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const d=r(ac-tdee);const el=document.getElementById(did);el.textContent=(d>0?'+':'')+d;el.className=cls+' '+(d>100?'ab':d<-100?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} cal/day`;}
+  function setR(did,sid,cls,days){if(!tdee||!days.length)return;const ac=avg(days.map(k=>sumDay(k).cal));const total=r(days.reduce((sum,k)=>sum+(sumDay(k).cal-tdee),0));const el=document.getElementById(did);el.textContent=(total>0?'+':'')+total;el.className=cls+' '+(total>100?'ab':total<-100?'aa':'');document.getElementById(sid).textContent=`avg ${r(ac)} cal/day`;}
   setR('r7d','r7s','hero-number',l7);setR('r30d','r30s','hero-chip-val',l30);
   // r7c chip removed — avg shown as sub-label under 7-day balance via r7s
 
